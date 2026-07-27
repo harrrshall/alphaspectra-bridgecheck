@@ -6,12 +6,17 @@ import {
   predictSpectrum,
   predictionToCsv,
 } from "./bridge-core.js";
+import {
+  buildExample,
+  exampleToCsv,
+} from "./examples.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 const state = {
   artifact: null,
   prediction: null,
   parsedInput: null,
+  activeExample: null,
   busy: false,
 };
 
@@ -26,9 +31,13 @@ const elements = {
   dropZone: document.querySelector("#drop-zone"),
   clearInput: document.querySelector("#clear-input"),
   run: document.querySelector("#run-prediction"),
-  demo: document.querySelector("#load-demo"),
+  examples: Array.from(document.querySelectorAll("[data-example]")),
+  exampleNote: document.querySelector("#example-note"),
   emptyResult: document.querySelector("#empty-result"),
   result: document.querySelector("#prediction-result"),
+  resultPanel: document.querySelector(".result-panel"),
+  resultHeading: document.querySelector("#result-title"),
+  resultAnnouncement: document.querySelector("#result-announcement"),
   claimChip: document.querySelector("#claim-chip"),
   metricState: document.querySelector("#metric-state"),
   metricRmse: document.querySelector("#metric-rmse"),
@@ -91,7 +100,26 @@ function parseCurrentInput({ report = false, filename = null } = {}) {
 
 function updateRunState() {
   elements.run.disabled = !state.artifact || state.busy || !elements.input.value.trim();
-  elements.demo.disabled = !state.artifact || state.busy;
+  elements.examples.forEach((button) => {
+    button.disabled = !state.artifact || state.busy;
+  });
+}
+
+function setActiveExample(example = null) {
+  state.activeExample = example;
+  elements.examples.forEach((button) => {
+    const selected = button.dataset.example === state.activeExample?.id;
+    button.setAttribute("aria-pressed", String(selected));
+    button.classList.toggle("is-active", selected);
+  });
+  if (!elements.exampleNote) return;
+  if (!example) {
+    elements.exampleNote.hidden = true;
+    elements.exampleNote.textContent = "";
+    return;
+  }
+  elements.exampleNote.hidden = false;
+  elements.exampleNote.textContent = `${example.label}: ${example.provenance}. ${example.expectation}.`;
 }
 
 function safeFilenamePart(value) {
@@ -257,7 +285,7 @@ function renderPrediction(prediction) {
   elements.metricState.textContent = prediction.retrieval.nearest_candidate;
   elements.metricRmse.textContent = prediction.retrieval.context_fit_rmse.toPrecision(6);
   displaySupport(prediction.retrieval.support_tier);
-  elements.observedCount.textContent = `${prediction.observed.wavelength_nm.length} measured bands`;
+  elements.observedCount.textContent = `${prediction.observed.wavelength_nm.length} input bands`;
   elements.derivedCount.textContent = `${prediction.derived.wavelength_nm.length} derived bands`;
   elements.warnings.replaceChildren(
     ...prediction.warnings.map((warning) => {
@@ -267,6 +295,21 @@ function renderPrediction(prediction) {
     }),
   );
   renderChart(prediction);
+  elements.chart.setAttribute(
+    "aria-label",
+    `Spectral chart with ${prediction.observed.wavelength_nm.length} input VNIR bands, `
+      + `${prediction.derived.wavelength_nm.length} model-derived SWIR bands, `
+      + `nearest ${prediction.retrieval.nearest_candidate}, and context RMSE `
+      + `${prediction.retrieval.context_fit_rmse.toPrecision(6)}.`,
+  );
+  elements.resultAnnouncement.textContent =
+    `Candidate generated. ${prediction.retrieval.nearest_candidate}; `
+    + `context RMSE ${prediction.retrieval.context_fit_rmse.toPrecision(6)}; `
+    + `${elements.metricSupport.textContent}.`;
+  elements.resultHeading.focus({ preventScroll: true });
+  if (window.matchMedia("(max-width: 600px)").matches) {
+    elements.resultPanel.scrollIntoView({ block: "start", behavior: "auto" });
+  }
 }
 
 async function runPrediction() {
@@ -276,6 +319,7 @@ async function runPrediction() {
     return;
   }
   state.busy = true;
+  elements.resultAnnouncement.textContent = "Generating candidate spectrum.";
   updateRunState();
   const original = elements.run.querySelector("span").textContent;
   elements.run.querySelector("span").textContent = "Retrieving state…";
@@ -284,12 +328,25 @@ async function runPrediction() {
       state.artifact,
       parsed.wavelengthNm,
       parsed.reflectance,
-      { neighbors: 5 },
+      {
+        neighbors: 5,
+        inputOrigin: state.activeExample?.inputOrigin ?? "measured",
+      },
     );
+    if (state.activeExample) {
+      prediction.browser_example = {
+        id: state.activeExample.id,
+        label: state.activeExample.label,
+        input_origin: state.activeExample.inputOrigin,
+        provenance: state.activeExample.provenance,
+        expectation: state.activeExample.expectation,
+      };
+    }
     state.prediction = prediction;
     renderPrediction(prediction);
   } catch (error) {
     state.prediction = null;
+    elements.resultAnnouncement.textContent = "Candidate generation failed closed.";
     if (error instanceof BridgeContractError || error instanceof BridgeArtifactError) {
       showError(error.message);
     } else {
@@ -302,34 +359,42 @@ async function runPrediction() {
   }
 }
 
-function loadDemo() {
+async function loadExample(exampleId) {
   if (!state.artifact) {
     return;
   }
-  const { contextIndices, wavelengthsNm, bank, shape } = state.artifact;
-  const lines = ["wavelength_nm,reflectance"];
-  contextIndices.forEach((band) => {
-    lines.push(`${wavelengthsNm[band]},${bank[band].toPrecision(17)}`);
-  });
-  elements.input.value = `${lines.join("\n")}\n`;
+  let example;
+  try {
+    example = buildExample(state.artifact, exampleId);
+  } catch (error) {
+    showError(`Example unavailable: ${error.message}`);
+    return;
+  }
+  elements.input.value = exampleToCsv(example);
   hideError();
-  const parsed = parseCurrentInput({ filename: "frozen-bank-demo.csv" });
+  const parsed = parseCurrentInput({ filename: example.filename });
   state.parsedInput = parsed;
   state.prediction = null;
+  setActiveExample(example);
+  elements.resultAnnouncement.textContent = `${example.label} loaded. Generating candidate.`;
   elements.emptyResult.hidden = false;
   elements.result.hidden = true;
   elements.claimChip.hidden = true;
   updateRunState();
   elements.input.scrollTop = 0;
-  elements.input.focus();
-  // shape is touched deliberately: this demo always uses state 0 in row-major order.
-  void shape;
+  await runPrediction();
 }
 
 async function loadLocalFile(file) {
   if (!file) {
     return;
   }
+  setActiveExample();
+  state.prediction = null;
+  elements.resultAnnouncement.textContent = "Local input selected. The previous candidate was cleared.";
+  elements.emptyResult.hidden = false;
+  elements.result.hidden = true;
+  elements.claimChip.hidden = true;
   if (file.size > 2_000_000) {
     showError("Local CSV exceeds the 2 MB browser interface limit");
     return;
@@ -350,6 +415,8 @@ function clearInput() {
   elements.fileInput.value = "";
   state.parsedInput = null;
   state.prediction = null;
+  setActiveExample();
+  elements.resultAnnouncement.textContent = "Input cleared. No candidate is displayed.";
   hideError();
   summarizeInput(null);
   elements.emptyResult.hidden = false;
@@ -369,6 +436,16 @@ function currentJson() {
 function installEvents() {
   let parseTimer = null;
   elements.input.addEventListener("input", () => {
+    if (state.activeExample) {
+      setActiveExample();
+    }
+    if (state.prediction) {
+      state.prediction = null;
+      elements.resultAnnouncement.textContent = "Input changed. The previous candidate was cleared.";
+      elements.emptyResult.hidden = false;
+      elements.result.hidden = true;
+      elements.claimChip.hidden = true;
+    }
     hideError();
     updateRunState();
     clearTimeout(parseTimer);
@@ -397,7 +474,9 @@ function installEvents() {
   elements.dropZone.addEventListener("drop", (event) => loadLocalFile(event.dataTransfer.files[0]));
   elements.clearInput.addEventListener("click", clearInput);
   elements.run.addEventListener("click", runPrediction);
-  elements.demo.addEventListener("click", loadDemo);
+  elements.examples.forEach((button) => {
+    button.addEventListener("click", () => loadExample(button.dataset.example));
+  });
   elements.downloadCsv.addEventListener("click", () => {
     if (!state.prediction) return;
     downloadText(

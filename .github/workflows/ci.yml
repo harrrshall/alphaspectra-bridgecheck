@@ -70,6 +70,9 @@ jobs:
           required_suffixes = {
               "bridgecheck/model/bridge_v1.f64",
               "bridgecheck/model/manifest.json",
+              "bridgecheck/static/examples.js",
+              "bridgecheck/static/index.html",
+              "bridgecheck/static/styles.css",
               "licenses/LICENSE",
               "licenses/NOTICE",
               "licenses/DATA_ATTRIBUTION.md",

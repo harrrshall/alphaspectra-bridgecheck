@@ -3,6 +3,22 @@
 All notable changes to BridgeCheck are recorded here. The format follows Keep a Changelog and the
 project uses semantic versioning for public artifacts.
 
+## [Unreleased]
+
+### Changed
+
+- Rebuilt the browser application as a compact research notebook with publication-style typography,
+  a dominant scientific plot, tabular evidence and a reduced visual palette.
+- Added five one-click local example spectra with explicit provenance, expected support
+  behavior, keyboard state and automatic inference.
+- Added dynamic result announcements, chart summaries, stale-result clearing and responsive research
+  layouts for desktop and mobile.
+
+### Tests
+
+- Added frozen expected-state/hash/support checks for every browser example and static accessibility,
+  local-dependency, provenance and responsive-design invariants.
+
 ## [0.1.0] - 2026-07-27
 
 ### Added

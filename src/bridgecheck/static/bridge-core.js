@@ -2,8 +2,9 @@
  * AlphaSpectra BridgeCheck browser inference core.
  *
  * This file deliberately has no runtime dependencies. It mirrors the frozen
- * Python predictor in bridgecheck/predict.py and keeps measured input separate
- * from model-derived output.
+ * Python predictor in bridgecheck/predict.py and keeps provided input separate
+ * from model-derived output. The optional input-origin label exists only so
+ * built-in generated examples cannot be misrepresented as measurements.
  */
 
 export const MODEL_ID = "alphaspectra-bridge-p1-20260727";
@@ -13,6 +14,12 @@ export const MANIFEST_FILE_SHA256 = "da3d63a6f535219a618f6b2a118693f59f2aa001a75
 
 const CLAIM_STATUS = "CANDIDATE_ONLY_UNVALIDATED";
 const DEFAULT_NEIGHBORS = 5;
+const INPUT_ORIGINS = new Set([
+  "measured",
+  "measured_training_example",
+  "generated_bank_example_not_measured",
+  "constructed_support_test_not_measured",
+]);
 
 export class BridgeContractError extends Error {
   constructor(message) {
@@ -347,7 +354,7 @@ export async function predictSpectrum(
   artifact,
   wavelengthsNm,
   reflectance,
-  { neighbors = DEFAULT_NEIGHBORS } = {},
+  { neighbors = DEFAULT_NEIGHBORS, inputOrigin = "measured" } = {},
 ) {
   if (!artifact?.manifest || !artifact?.bank) {
     throw new BridgeArtifactError("a verified BridgeCheck artifact is required");
@@ -359,6 +366,9 @@ export async function predictSpectrum(
   );
   if (!Number.isInteger(neighbors) || neighbors < 1 || neighbors > 10) {
     throw new BridgeContractError("neighbors must be between 1 and 10");
+  }
+  if (!INPUT_ORIGINS.has(inputOrigin)) {
+    throw new BridgeContractError("input origin is unsupported");
   }
 
   const [stateCount, bandCount] = artifact.shape;
@@ -421,7 +431,7 @@ export async function predictSpectrum(
     model_id: artifact.manifest.model_id,
     input_sha256: await inputSha256(wavelength, values),
     observed: {
-      origin: "measured",
+      origin: inputOrigin,
       wavelength_nm: Array.from(wavelength),
       reflectance: Array.from(values),
       observed_band_mask: Array.from({ length: wavelength.length }, () => true),

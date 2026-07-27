@@ -14,6 +14,9 @@ Try the public, browser-only app: **https://harrrshall.github.io/alphaspectra-br
 - `audit`: paired same-sample VNIR+SWIR → grouped comparison against two baselines, spectral-distance
   bins, bootstrap intervals, context controls and strict no-clipping checks.
 - Runs locally on CPU or entirely in a browser. The static app uploads nothing.
+- Five one-click browser examples cover a measured training-domain spectrum, lower/median/higher
+  generated reference geometry and a deliberate support-tail warning. Their provenance is displayed
+  in the interface; generated cases are not measurements or accuracy evidence.
 
 ## What it does not do
 

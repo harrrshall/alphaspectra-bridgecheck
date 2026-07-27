@@ -91,6 +91,7 @@ jobs:
           test -f _site/index.html
           test -f _site/assets/app.js
           test -f _site/assets/bridge-core.js
+          test -f _site/assets/examples.js
           test -f _site/assets/styles.css
           test -f _site/model/manifest.json
           test -f _site/docs/RELEASE_VERIFICATION.json

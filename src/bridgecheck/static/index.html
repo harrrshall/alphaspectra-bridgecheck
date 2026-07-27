@@ -3,88 +3,119 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Generate an explicitly model-derived candidate SWIR curve from an absolute-reflectance VNIR leaf point spectrum. No uploads, diagnosis, or measurement-equivalence claims.">
-    <meta name="theme-color" content="#0d1715">
+    <meta name="description" content="A local research interface for generating explicitly model-derived candidate SWIR curves from absolute-reflectance VNIR leaf spectra.">
+    <meta name="theme-color" content="#f5f5f1">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
-    <title>AlphaSpectra BridgeCheck</title>
+    <title>BridgeCheck · AlphaSpectra Research Tool</title>
     <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="./assets/styles.css">
     <script type="module" src="./assets/app.js"></script>
   </head>
   <body>
-    <a class="skip-link" href="#workspace">Skip to spectrum workspace</a>
+    <a class="skip-link" href="#workspace">Skip to interactive notebook</a>
 
     <header class="site-header">
-      <a class="brand" href="./" aria-label="AlphaSpectra BridgeCheck home">
-        <span class="brand-mark" aria-hidden="true">
-          <span></span><span></span><span></span><span></span><span></span>
-        </span>
-        <span>
-          <strong>AlphaSpectra</strong>
-          <small>BridgeCheck</small>
-        </span>
-      </a>
-      <div class="privacy-pill" title="Your spectrum is processed by JavaScript in this browser">
-        <span class="privacy-dot" aria-hidden="true"></span>
-        Local processing · no uploads
+      <div class="header-inner">
+        <a class="brand" href="./" aria-label="AlphaSpectra BridgeCheck home">
+          <span class="brand-mark" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+          </span>
+          <span class="brand-copy">
+            <strong>AlphaSpectra</strong>
+            <small>BridgeCheck / research interface</small>
+          </span>
+        </a>
+
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="#workspace">Notebook</a>
+          <a href="#evidence">Evidence</a>
+          <a href="#protocol">Protocol</a>
+          <a href="https://github.com/harrrshall/alphaspectra-bridgecheck">Source <span aria-hidden="true">↗</span></a>
+        </nav>
+
+        <div class="local-status" title="Spectra are processed by JavaScript in this browser">
+          <span aria-hidden="true"></span>
+          Local · no upload
+        </div>
       </div>
     </header>
 
     <main>
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow">VNIR → candidate SWIR, with the caveat attached</p>
-          <h1 id="hero-title">Test the bridge.<br><span>Keep the boundary.</span></h1>
-          <p class="hero-summary">
-            Turn an absolute-reflectance VNIR leaf point spectrum into an explicitly
-            <code>model_derived</code> SWIR candidate. Use it to plan a paired measurement study—not
-            to replace one.
+          <div class="release-line" aria-label="Product summary">
+            <span>Research tool</span>
+            <span>Model P1</span>
+            <span>Open source</span>
+          </div>
+          <h1 id="hero-title">Observed VNIR.<br><em>Candidate</em> SWIR.</h1>
+          <p class="abstract">
+            <span>Abstract</span>
+            BridgeCheck retrieves a physics-grounded SWIR candidate from an absolute-reflectance
+            VNIR leaf spectrum. It is designed for paired-measurement study planning—not sensor
+            replacement or diagnosis.
           </p>
           <div class="hero-actions">
-            <a class="button button-primary" href="#workspace">Check a spectrum</a>
-            <a class="text-link" href="#evidence">Read the evidence boundary <span aria-hidden="true">↓</span></a>
+            <a class="button button-primary" href="#examples">Try an example</a>
+            <a class="button button-quiet" href="#evidence">Read the evidence</a>
           </div>
+          <dl class="hero-facts">
+            <div><dt>Input</dt><dd>400–1000 nm measured VNIR</dd></div>
+            <div><dt>Output</dt><dd>1052–2400 nm model-derived candidate</dd></div>
+            <div><dt>Compute</dt><dd>Verified locally in your browser</dd></div>
+          </dl>
         </div>
-        <div class="hero-spectrum" aria-hidden="true">
-          <div class="spectrum-grid"></div>
-          <svg viewBox="0 0 640 300" role="presentation">
-            <defs>
-              <linearGradient id="heroLine" x1="0" x2="1">
-                <stop offset="0" stop-color="#6fe1ae"/>
-                <stop offset=".38" stop-color="#e4c76e"/>
-                <stop offset=".72" stop-color="#d19dff"/>
-                <stop offset="1" stop-color="#8374ff"/>
-              </linearGradient>
-              <linearGradient id="heroFill" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0" stop-color="#a998ff" stop-opacity=".25"/>
-                <stop offset="1" stop-color="#a998ff" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
-            <path class="hero-envelope" d="M18,221 C63,226 93,210 125,179 C162,144 204,78 250,73 C295,68 304,128 348,142 C392,157 416,116 453,123 C495,130 513,193 554,187 C587,182 608,151 630,133 L630,207 C600,220 578,234 548,235 C510,237 485,180 449,175 C410,169 389,202 350,191 C310,180 287,129 250,135 C211,142 184,198 137,222 C98,242 57,247 18,244 Z"/>
-            <path class="hero-line" d="M18,231 C65,238 96,217 129,184 C164,149 201,92 247,87 C293,82 309,145 350,160 C392,175 415,136 452,143 C491,151 515,211 553,207 C590,204 608,169 630,153"/>
-            <line x1="282" y1="38" x2="282" y2="263" class="hero-divider"/>
-            <text x="28" y="275">MEASURED VNIR</text>
-            <text x="398" y="275">MODEL-DERIVED SWIR</text>
+
+        <figure class="hero-figure">
+          <figcaption>
+            <span>Figure 01</span>
+            <strong>Spectral bridge schema</strong>
+          </figcaption>
+          <svg viewBox="0 0 720 360" role="img" aria-labelledby="schema-title schema-desc">
+            <title id="schema-title">Measured VNIR and model-derived SWIR schematic</title>
+            <desc id="schema-desc">A solid green measured curve ends at 1000 nanometers. After a marked gap, a dashed violet model-derived curve continues to 2400 nanometers.</desc>
+            <g class="schema-grid">
+              <line x1="68" y1="58" x2="68" y2="300"/>
+              <line x1="68" y1="300" x2="680" y2="300"/>
+              <line x1="68" y1="239" x2="680" y2="239"/>
+              <line x1="68" y1="179" x2="680" y2="179"/>
+              <line x1="68" y1="118" x2="680" y2="118"/>
+              <line x1="252" y1="58" x2="252" y2="300"/>
+              <line x1="435" y1="58" x2="435" y2="300"/>
+              <line x1="619" y1="58" x2="619" y2="300"/>
+            </g>
+            <rect class="schema-gap" x="249" y="58" width="18" height="242"/>
+            <path class="schema-observed" d="M68,272 C102,276 126,258 146,225 C166,191 188,114 215,110 C236,107 241,150 252,170"/>
+            <path class="schema-derived" d="M268,179 C300,205 324,199 348,177 C375,152 405,158 432,185 C461,214 489,239 518,218 C550,195 573,194 598,224 C621,251 649,256 680,216"/>
+            <path class="schema-envelope" d="M268,164 C301,189 324,183 348,161 C375,137 405,143 432,170 C461,199 489,224 518,203 C550,180 573,179 598,209 C621,236 649,241 680,201 L680,232 C649,271 621,266 598,239 C573,209 550,210 518,233 C489,254 461,229 432,200 C405,173 375,168 348,193 C324,215 301,220 268,194 Z"/>
+            <line class="schema-boundary" x1="252" y1="58" x2="252" y2="300"/>
+            <g class="schema-axis">
+              <text x="68" y="326">400</text>
+              <text x="252" y="326" text-anchor="middle">1000</text>
+              <text x="435" y="326" text-anchor="middle">1600</text>
+              <text x="619" y="326" text-anchor="middle">2200</text>
+              <text x="680" y="326" text-anchor="end">2400 nm</text>
+              <text x="81" y="82">MEASURED</text>
+              <text x="285" y="82">MODEL-DERIVED</text>
+              <text x="244" y="48" text-anchor="end">1000</text>
+              <text x="274" y="48">1052</text>
+            </g>
           </svg>
-          <div class="boundary-note">
-            <strong>Two origins stay separate.</strong>
-            <span>No silent band filling.</span>
+          <div class="figure-legend" aria-hidden="true">
+            <span><i class="legend-solid"></i>Measured VNIR</span>
+            <span><i class="legend-dashed"></i>Candidate SWIR</span>
+            <span><i class="legend-fill"></i>Neighbor range</span>
           </div>
-        </div>
+          <p class="figure-note">The 1000–1052 nm gap and the two data origins remain explicit.</p>
+        </figure>
       </section>
 
-      <section class="truth-strip" aria-label="Product boundaries">
-        <div><span class="truth-icon check" aria-hidden="true">✓</span><span>Deterministic physics-state retrieval</span></div>
-        <div><span class="truth-icon check" aria-hidden="true">✓</span><span>Artifact verified before inference</span></div>
-        <div><span class="truth-icon cross" aria-hidden="true">×</span><span>Not a measured sensor band</span></div>
-        <div><span class="truth-icon cross" aria-hidden="true">×</span><span>Not a diagnosis</span></div>
-      </section>
-
-      <section class="workspace-section" id="workspace" aria-labelledby="workspace-title">
-        <div class="section-heading">
+      <section class="notebook" id="workspace" aria-labelledby="workspace-title">
+        <div class="section-intro">
           <div>
-            <p class="eyebrow">Browser workspace</p>
-            <h2 id="workspace-title">Check one point spectrum</h2>
+            <p class="section-code">Notebook / 01</p>
+            <h2 id="workspace-title">Run the frozen bridge</h2>
+            <p>Start with a documented example, or provide your own measured VNIR point spectrum.</p>
           </div>
           <div id="model-status" class="model-status is-loading" role="status" aria-live="polite">
             <span class="status-light" aria-hidden="true"></span>
@@ -92,48 +123,95 @@
           </div>
         </div>
 
+        <div class="example-block" id="examples">
+          <div class="example-heading">
+            <div>
+              <h3>Example spectra</h3>
+              <p id="examples-disclosure">One click loads and runs locally. Labels describe spectral geometry—not biology.</p>
+            </div>
+            <span>5 deterministic examples</span>
+          </div>
+          <div class="example-grid" role="group" aria-label="Playable example spectra" aria-describedby="examples-disclosure">
+            <button id="load-demo" class="example-card" type="button" data-example="measured-cabo" aria-pressed="false" disabled>
+              <span class="example-meta"><span>Training domain</span><span>01</span></span>
+              <strong>Measured CABO</strong>
+              <p>Training-group median · not validation</p>
+              <span class="example-expectation">Inside reference-fit range</span>
+            </button>
+            <button class="example-card" type="button" data-example="lower-reference" aria-pressed="false" disabled>
+              <span class="example-meta"><span>Generated bank</span><span>02</span></span>
+              <strong>Lower NIR</strong>
+              <p>Lower 760–1000 nm bank profile</p>
+              <span class="example-expectation">Exact bank match expected</span>
+            </button>
+            <button class="example-card" type="button" data-example="median-reference" aria-pressed="false" disabled>
+              <span class="example-meta"><span>Generated bank</span><span>03</span></span>
+              <strong>Median NIR</strong>
+              <p>Middle 760–1000 nm bank profile</p>
+              <span class="example-expectation">Exact bank match expected</span>
+            </button>
+            <button class="example-card" type="button" data-example="higher-reference" aria-pressed="false" disabled>
+              <span class="example-meta"><span>Generated bank</span><span>04</span></span>
+              <strong>Higher NIR</strong>
+              <p>Higher 760–1000 nm bank profile</p>
+              <span class="example-expectation">Exact bank match expected</span>
+            </button>
+            <button class="example-card example-warning" type="button" data-example="support-warning" aria-pressed="false" disabled>
+              <span class="example-meta"><span>Constructed test</span><span>05</span></span>
+              <strong>Support warning</strong>
+              <p>Artificial +0.05 offset · not a real sample</p>
+              <span class="example-expectation">Fit warning expected</span>
+            </button>
+          </div>
+          <p id="example-note" class="example-note" aria-live="polite" hidden></p>
+          <p class="example-footnote">Generated-bank examples are exact by construction; zero context error is not evidence of real-world accuracy.</p>
+        </div>
+
         <div class="workspace-grid">
           <article class="panel input-panel" aria-labelledby="input-title">
-            <div class="panel-header">
-              <div class="step-number" aria-hidden="true">01</div>
+            <header class="panel-header">
               <div>
-                <h3 id="input-title">Measured VNIR input</h3>
-                <p>Absolute decimal leaf reflectance only</p>
+                <p class="panel-code">Input / VNIR</p>
+                <h3 id="input-title">VNIR point spectrum</h3>
               </div>
-            </div>
+              <span class="origin-label origin-measured">Provided input</span>
+            </header>
 
-            <div class="contract-grid" aria-label="Input contract summary">
-              <div><span>Coverage</span><strong>400–1000 nm</strong></div>
-              <div><span>Minimum</span><strong>100 bands</strong></div>
-              <div><span>Largest gap</span><strong>≤ 10 nm</strong></div>
-              <div><span>Reflectance</span><strong>−0.05 to 1.0</strong></div>
-            </div>
+            <dl class="contract-row" aria-label="Input contract">
+              <div><dt>Coverage</dt><dd>400–1000 nm</dd></div>
+              <div><dt>Minimum</dt><dd>100 bands</dd></div>
+              <div><dt>Gap</dt><dd>≤ 10 nm</dd></div>
+              <div><dt>Unit</dt><dd>decimal fraction</dd></div>
+            </dl>
 
-            <label class="field-label" for="spectrum-input">
-              CSV spectrum
-              <span><code>wavelength_nm,reflectance</code></span>
-            </label>
-            <textarea
-              id="spectrum-input"
-              spellcheck="false"
-              autocomplete="off"
-              placeholder="wavelength_nm,reflectance&#10;400,0.052&#10;404,0.053&#10;…&#10;1000,0.441"
-              aria-describedby="input-help input-summary"
-            ></textarea>
-            <p id="input-help" class="field-help">
-              Strictly increasing wavelengths. Fractions, not percentages. Values are never clipped.
-            </p>
+            <details class="csv-editor" open>
+              <summary>
+                <span>Paste CSV spectrum</span>
+                <code>wavelength_nm,reflectance</code>
+              </summary>
+              <label class="sr-only" for="spectrum-input">CSV spectrum with wavelength and reflectance columns</label>
+              <textarea
+                id="spectrum-input"
+                spellcheck="false"
+                autocomplete="off"
+                placeholder="wavelength_nm,reflectance&#10;400,0.052&#10;404,0.053&#10;…&#10;1000,0.441"
+                aria-describedby="input-help input-summary"
+              ></textarea>
+              <p id="input-help" class="field-help">Strictly increasing wavelengths. Fractions, not percentages. Values are never clipped.</p>
+            </details>
 
-            <div id="drop-zone" class="drop-zone">
+            <div id="drop-zone" class="upload-row">
               <input id="file-input" type="file" accept=".csv,text/csv,text/plain" hidden>
-              <span class="drop-icon" aria-hidden="true">↧</span>
-              <span><button id="choose-file" class="inline-button" type="button">Choose a local CSV</button> or drop it here</span>
-              <small>The file is read on this device and is not transmitted.</small>
+              <span>
+                <strong>Use a local file</strong>
+                <small>Read on this device; never transmitted.</small>
+              </span>
+              <button id="choose-file" class="button button-small" type="button">Choose CSV</button>
             </div>
 
             <div class="input-meta">
               <span id="input-summary" aria-live="polite">No spectrum loaded</span>
-              <button id="clear-input" class="quiet-button" type="button">Clear</button>
+              <button id="clear-input" class="text-button" type="button">Clear input</button>
             </div>
 
             <div id="input-error" class="message message-error" role="alert" hidden>
@@ -146,42 +224,41 @@
                 <span>Generate candidate</span>
                 <span aria-hidden="true">→</span>
               </button>
-              <button id="load-demo" class="button button-secondary" type="button" disabled>Load model demo</button>
+              <span><kbd>Ctrl</kbd> + <kbd>Enter</kbd></span>
             </div>
-            <p class="demo-disclosure">The demo input is generated from the frozen bank and is not a measured sample.</p>
           </article>
 
           <article class="panel result-panel" aria-labelledby="result-title">
-            <div class="panel-header">
-              <div class="step-number" aria-hidden="true">02</div>
+            <header class="panel-header">
               <div>
-                <h3 id="result-title">Model-derived candidate</h3>
-                <p>Kept structurally separate from your measurement</p>
+                <p class="panel-code">Output / inferred</p>
+                <h3 id="result-title" tabindex="-1">Candidate spectrum</h3>
               </div>
-              <span id="claim-chip" class="claim-chip" hidden>Candidate only</span>
-            </div>
+              <span id="claim-chip" class="origin-label origin-derived" hidden>Candidate only</span>
+            </header>
+            <p id="result-announcement" class="sr-only" aria-live="polite"></p>
 
             <div id="empty-result" class="empty-result">
-              <div class="empty-orbit" aria-hidden="true"><span></span></div>
-              <h4>No candidate generated</h4>
-              <p>A verified artifact and contract-valid spectrum are required before inference runs.</p>
+              <svg viewBox="0 0 540 230" aria-hidden="true">
+                <line x1="42" y1="188" x2="512" y2="188"/>
+                <line x1="42" y1="32" x2="42" y2="188"/>
+                <line x1="159" y1="32" x2="159" y2="188"/>
+                <line x1="277" y1="32" x2="277" y2="188"/>
+                <line x1="394" y1="32" x2="394" y2="188"/>
+                <path d="M43,162 C86,168 110,131 147,125 C181,119 205,145 240,132"/>
+                <path class="placeholder-derived" d="M260,136 C302,116 328,123 356,147 C391,176 430,157 466,129 C484,115 500,120 512,132"/>
+              </svg>
+              <strong>No candidate generated</strong>
+              <p>Select an example or provide a contract-valid measured VNIR spectrum.</p>
             </div>
 
             <div id="prediction-result" hidden>
-              <div class="metrics" aria-label="Retrieval summary">
-                <div>
-                  <span>Nearest state</span>
-                  <strong id="metric-state">—</strong>
-                </div>
-                <div>
-                  <span>Context RMSE</span>
-                  <strong id="metric-rmse">—</strong>
-                </div>
-                <div>
-                  <span>Reference support</span>
-                  <strong id="metric-support">—</strong>
-                </div>
-              </div>
+              <dl class="metrics" aria-label="Retrieval summary">
+                <div><dt>Nearest state</dt><dd id="metric-state">—</dd></div>
+                <div><dt>Context RMSE</dt><dd id="metric-rmse">—</dd></div>
+                <div><dt>Reference support</dt><dd id="metric-support">—</dd></div>
+              </dl>
+              <p class="metric-note">Reference support is descriptive distance—not confidence or validation.</p>
 
               <div class="chart-heading">
                 <div>
@@ -189,100 +266,115 @@
                   <p>Neighbor range is descriptive—not calibrated uncertainty.</p>
                 </div>
                 <div class="legend" aria-label="Chart legend">
-                  <span><i class="legend-line observed"></i>Measured VNIR</span>
-                  <span><i class="legend-line derived"></i>Model-derived SWIR</span>
+                  <span><i class="legend-line observed"></i>Input VNIR</span>
+                  <span><i class="legend-line derived"></i>Model-derived</span>
                   <span><i class="legend-area"></i>5-neighbor range</span>
                 </div>
               </div>
-              <div id="spectrum-chart" class="chart" role="img" aria-label="Measured VNIR and separately model-derived SWIR reflectance chart"></div>
+              <div id="spectrum-chart" class="chart" role="img" tabindex="0" aria-label="Input VNIR and separately model-derived SWIR reflectance chart"></div>
+              <p class="chart-pan-cue">Swipe or use arrow keys to inspect the full spectrum <span aria-hidden="true">↔</span></p>
 
-              <div class="origin-ledger" aria-label="Band origin ledger">
-                <div>
-                  <span class="origin-swatch observed"></span>
-                  <p><strong id="observed-count">— measured bands</strong><small>Observed mask: true</small></p>
-                </div>
-                <div>
-                  <span class="origin-swatch derived"></span>
-                  <p><strong id="derived-count">— derived bands</strong><small>Observed mask: false</small></p>
-                </div>
-              </div>
+              <table class="origin-table" aria-label="Band origin ledger">
+                <thead><tr><th>Origin</th><th>Bands</th><th>Provided to model</th></tr></thead>
+                <tbody>
+                  <tr><td><i class="origin-swatch observed"></i>Input VNIR</td><td id="observed-count">— input bands</td><td><code>true</code></td></tr>
+                  <tr><td><i class="origin-swatch derived"></i>Candidate SWIR</td><td id="derived-count">— derived bands</td><td><code>false</code></td></tr>
+                </tbody>
+              </table>
 
               <div class="warning-box">
-                <div class="warning-title"><span aria-hidden="true">!</span><strong>Required interpretation</strong></div>
+                <div class="warning-title"><span aria-hidden="true">!</span><strong>Interpretation boundary</strong></div>
                 <ul id="prediction-warnings"></ul>
               </div>
 
               <div class="download-row">
-                <button id="download-csv" class="button button-secondary" type="button">Download derived CSV</button>
-                <button id="download-json" class="button button-secondary" type="button">Download full JSON</button>
-                <button id="copy-json" class="quiet-button" type="button">Copy JSON</button>
+                <button id="download-csv" class="button button-small" type="button">Download derived CSV</button>
+                <button id="download-json" class="button button-small" type="button">Download full JSON</button>
+                <button id="copy-json" class="text-button" type="button">Copy JSON</button>
               </div>
             </div>
           </article>
         </div>
       </section>
 
-      <section class="evidence-section" id="evidence" aria-labelledby="evidence-title">
-        <div class="section-heading evidence-heading">
+      <section class="evidence" id="evidence" aria-labelledby="evidence-title">
+        <div class="section-intro evidence-intro">
           <div>
-            <p class="eyebrow">The full evidence, including the failure</p>
-            <h2 id="evidence-title">Useful mechanism. Bounded claim.</h2>
+            <p class="section-code">Evidence / 02</p>
+            <h2 id="evidence-title">The useful result—and the failed gate</h2>
           </div>
-          <p>
-            The frozen decoder improved reconstruction in point-spectrum tests and aggregate camera
-            error. The independent camera-validity and downstream-utility gate still failed.
-          </p>
+          <p>Reconstruction improved across three sources. Camera validity and downstream utility still failed.</p>
         </div>
 
-        <div class="evidence-cards">
-          <article>
-            <span class="experiment-tag">EXP-0123 · CABO</span>
-            <strong>61.98%</strong>
-            <h3>lower held-SWIR MAE</h3>
-            <p>Development mechanism pass across 468 biological groups.</p>
-          </article>
-          <article>
-            <span class="experiment-tag">EXP-0124 · NASA FFT</span>
-            <strong>55.28%</strong>
-            <h3>lower external-source MAE</h3>
-            <p>The unchanged decoder transferred across all nine held sites.</p>
-          </article>
-          <article class="failed-card">
-            <span class="experiment-tag">EXP-0125 · HySpex cubes</span>
-            <strong>Failed</strong>
-            <h3>strict camera + utility gate</h3>
-            <p>13/230 cubes failed no-clipping validity; measured and reconstructed SWIR both worsened held-plant drought Brier.</p>
-          </article>
+        <div class="evidence-table-wrap">
+          <table class="evidence-table">
+            <thead>
+              <tr><th>Study</th><th>Evaluation unit</th><th>Reconstruction result</th><th>Decision</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>EXP-0123</strong><span>CABO</span></td>
+                <td>468 biological groups</td>
+                <td><strong>61.98% lower MAE</strong></td>
+                <td><span class="decision decision-pass">Development mechanism pass</span></td>
+              </tr>
+              <tr>
+                <td><strong>EXP-0124</strong><span>NASA FFT</span></td>
+                <td>9 external sites</td>
+                <td><strong>55.28% lower MAE</strong></td>
+                <td><span class="decision decision-pass">External point-spectrum pass</span></td>
+              </tr>
+              <tr class="evidence-failure">
+                <td><strong>EXP-0125</strong><span>HySpex cubes</span></td>
+                <td>46 plants · 230 cubes</td>
+                <td><strong>49.83% lower aggregate MAE</strong></td>
+                <td><span class="decision decision-fail">Camera + utility gate failed</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <p class="evidence-footnote">
-          Percentages above are relative reductions in reconstruction MAE, not gains in biological,
-          diagnostic, or downstream task performance.
-        </p>
+        <p class="table-footnote">Relative MAE reductions are reconstruction results—not gains in diagnosis, biology, or downstream task performance.</p>
+
+        <aside class="claim-boundary" aria-labelledby="boundary-title">
+          <div>
+            <p class="section-code">Claim boundary</p>
+            <h3 id="boundary-title">A plausible reconstruction is not a measurement.</h3>
+          </div>
+          <div class="boundary-columns">
+            <div>
+              <span>Supported use</span>
+              <p>Generate a candidate, design paired acquisition, and audit reconstruction by biological group.</p>
+            </div>
+            <div>
+              <span>Not established</span>
+              <p>Measured SWIR, sensor equivalence, diagnosis, calibrated uncertainty, or downstream utility.</p>
+            </div>
+          </div>
+        </aside>
       </section>
 
-      <section class="use-section" aria-labelledby="use-title">
-        <div class="use-copy">
-          <p class="eyebrow">What comes after a candidate</p>
-          <h2 id="use-title">Measure. Audit. Then test value.</h2>
-          <p>
-            A plausible curve is only the start. Before product or research use, collect paired
-            same-sample SWIR, run the grouped BridgeCheck audit, and independently test whether the
-            actual measured bands improve your held biological or campaign endpoint.
-          </p>
+      <section class="protocol" id="protocol" aria-labelledby="protocol-title">
+        <div class="section-intro">
+          <div>
+            <p class="section-code">Protocol / 03</p>
+            <h2 id="protocol-title">From candidate to evidence</h2>
+          </div>
         </div>
-        <ol class="use-steps">
-          <li><span>1</span><div><strong>Generate</strong><p>Explore an explicitly model-derived candidate.</p></div></li>
-          <li><span>2</span><div><strong>Pair</strong><p>Acquire same-unit measured VNIR and SWIR.</p></div></li>
-          <li><span>3</span><div><strong>Audit</strong><p>Compare by biological group against strong baselines.</p></div></li>
-          <li><span>4</span><div><strong>Prove value</strong><p>Test measured-SWIR utility on untouched groups.</p></div></li>
+        <ol class="protocol-steps">
+          <li><span>01</span><div><strong>Generate</strong><p>Explore a separately typed candidate curve.</p></div></li>
+          <li><span>02</span><div><strong>Measure</strong><p>Acquire same-unit VNIR and real SWIR.</p></div></li>
+          <li><span>03</span><div><strong>Audit</strong><p>Compare against strong baselines by group.</p></div></li>
+          <li><span>04</span><div><strong>Test value</strong><p>Evaluate measured SWIR on untouched endpoints.</p></div></li>
         </ol>
       </section>
     </main>
 
     <footer>
-      <div class="footer-brand">
-        <strong>AlphaSpectra BridgeCheck</strong>
-        <p>Open source. Commercially usable with required source attribution.</p>
+      <div class="footer-main">
+        <div>
+          <strong>AlphaSpectra / BridgeCheck</strong>
+          <p>Open source. Commercially usable with required source attribution.</p>
+        </div>
         <nav class="footer-links" aria-label="Product resources">
           <a href="https://github.com/harrrshall/alphaspectra-bridgecheck">Source + audit CLI</a>
           <a href="https://github.com/harrrshall/alphaspectra-bridgecheck/blob/main/MODEL_CARD.md">Model card</a>
