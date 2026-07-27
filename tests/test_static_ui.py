@@ -55,12 +55,31 @@ def test_research_interface_has_five_accessible_playable_cases() -> None:
         "spectrum-chart",
         "evidence",
         "protocol",
+        "load-sample-dataset",
     } <= parser.ids
     assert "Labels describe spectral geometry—not biology" in html
     assert "zero context error is not evidence of real-world accuracy" in html
     assert "Input / measured" not in html
     assert "— measured bands" not in html
     assert "Reference support is descriptive distance—not confidence or validation" in html
+    assert "Built-in test data" in html
+    assert "CABO measured VNIR sample" in html
+    assert "The useful result and the failed gate" in html
+    assert "The useful result—and the failed gate" not in html
+    assert "Relative MAE reductions are reconstruction results, not gains" in html
+    for removed in (
+        "Notebook / 01",
+        "Evidence / 02",
+        "Protocol / 03",
+        "AlphaSpectra / BridgeCheck",
+        "Open source. Commercially usable with required source attribution.",
+        "Source + audit CLI",
+        "Model card",
+        "Release verification",
+        "Frozen model",
+        "Not a measurement · Not calibrated uncertainty · Not a diagnosis",
+    ):
+        assert removed not in html
 
 
 def test_interface_uses_local_research_visual_system_and_responsive_rules() -> None:
@@ -80,3 +99,6 @@ def test_interface_uses_local_research_visual_system_and_responsive_rules() -> N
     assert "Input changed. The previous candidate was cleared." in app
     assert "browser_example" in app
     assert "The previous candidate was cleared" in app
+    assert 'loadExample("measured-cabo")' in app
+    assert "footerModelId" not in app
+    assert "footerHash" not in app

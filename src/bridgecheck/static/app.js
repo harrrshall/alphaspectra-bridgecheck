@@ -31,6 +31,7 @@ const elements = {
   dropZone: document.querySelector("#drop-zone"),
   clearInput: document.querySelector("#clear-input"),
   run: document.querySelector("#run-prediction"),
+  sampleDataset: document.querySelector("#load-sample-dataset"),
   examples: Array.from(document.querySelectorAll("[data-example]")),
   exampleNote: document.querySelector("#example-note"),
   emptyResult: document.querySelector("#empty-result"),
@@ -49,8 +50,6 @@ const elements = {
   downloadCsv: document.querySelector("#download-csv"),
   downloadJson: document.querySelector("#download-json"),
   copyJson: document.querySelector("#copy-json"),
-  footerModelId: document.querySelector("#footer-model-id"),
-  footerHash: document.querySelector("#footer-hash"),
 };
 
 function setModelStatus(kind, message) {
@@ -100,6 +99,7 @@ function parseCurrentInput({ report = false, filename = null } = {}) {
 
 function updateRunState() {
   elements.run.disabled = !state.artifact || state.busy || !elements.input.value.trim();
+  elements.sampleDataset.disabled = !state.artifact || state.busy;
   elements.examples.forEach((button) => {
     button.disabled = !state.artifact || state.busy;
   });
@@ -474,6 +474,7 @@ function installEvents() {
   elements.dropZone.addEventListener("drop", (event) => loadLocalFile(event.dataTransfer.files[0]));
   elements.clearInput.addEventListener("click", clearInput);
   elements.run.addEventListener("click", runPrediction);
+  elements.sampleDataset.addEventListener("click", () => loadExample("measured-cabo"));
   elements.examples.forEach((button) => {
     button.addEventListener("click", () => loadExample(button.dataset.example));
   });
@@ -516,12 +517,9 @@ async function initialize() {
     state.artifact = await loadBridgeArtifact(manifestUrl);
     const states = state.artifact.shape[0].toLocaleString();
     setModelStatus("ready", `Verified · ${states} frozen states`);
-    elements.footerModelId.textContent = state.artifact.manifest.model_id;
-    elements.footerHash.textContent = `SHA-256 ${state.artifact.verifiedArraySha256}`;
   } catch (error) {
     state.artifact = null;
     setModelStatus("error", "Artifact verification failed");
-    elements.footerHash.textContent = `Prediction disabled: ${error.message}`;
     showError(`Model unavailable; inference is disabled. ${error.message}`);
   } finally {
     updateRunState();

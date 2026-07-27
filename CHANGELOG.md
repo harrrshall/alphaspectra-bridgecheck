@@ -13,6 +13,9 @@ project uses semantic versioning for public artifacts.
   behavior, keyboard state and automatic inference.
 - Added dynamic result announcements, chart summaries, stale-result clearing and responsive research
   layouts for desktop and mobile.
+- Simplified section and evidence copy, removed the product/model footer, and placed a one-click
+  measured CABO test spectrum directly inside the VNIR input panel.
+- Reduced the header mark and favicon to a minimal three-line spectral symbol.
 
 ### Tests
 
