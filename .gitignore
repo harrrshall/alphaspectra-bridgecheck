@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+.venv/
+venv/
+
+# JavaScript tooling (the shipped browser application has no runtime dependencies)
+node_modules/
+
+# Local credentials and machine-specific configuration
+.env
+.env.*
+!.env.example
+.secrets/
+*.pem
+*.key
+*.p12
+
+# User spectra and generated reports are never release inputs
+/data/
+/outputs/
+/prediction.csv
+/prediction_report.json
+/audit_report.json
+
+# Editor and operating-system noise
+.DS_Store
+.idea/
+.vscode/
+*.swp

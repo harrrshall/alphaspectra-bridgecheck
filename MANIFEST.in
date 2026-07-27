@@ -1,0 +1,13 @@
+include LICENSE
+include NOTICE
+include README.md
+include DATA_ATTRIBUTION.md
+include THIRD_PARTY_NOTICES.md
+include MODEL_CARD.md
+include PRIVACY.md
+include SECURITY.md
+include RELEASE_VERIFICATION.json
+recursive-include examples *.csv *.json *.md
+recursive-include src/bridgecheck/model *.json *.f64
+recursive-include src/bridgecheck/static *
+recursive-include tests *.py *.mjs

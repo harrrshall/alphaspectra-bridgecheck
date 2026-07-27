@@ -1,0 +1,149 @@
+{
+  "artifact": {
+    "array_sha256": "1d64d6a0ec1dec48c2fa0c9c33c4cfcef832e714ecf88aaee55941a0d5fc2ac0",
+    "bytes": 4861704,
+    "dtype": "<f8",
+    "file_sha256": "aa9700558836fb7730ab650dd0eaaf921038dce65a25aba9d9efc8d451d0d83f",
+    "filename": "bridge_v1.f64",
+    "order": "C",
+    "shape": [
+      1213,
+      501
+    ]
+  },
+  "claim_ceiling": {
+    "allowed": "paired-measurement reconstruction research and study planning",
+    "forbidden": [
+      "measured or sensor-equivalent SWIR",
+      "disease, pathogen, drought, health, or treatment diagnosis",
+      "calibrated uncertainty",
+      "universal camera or species transport",
+      "downstream-model utility",
+      "automatic AlphaSpectra model input"
+    ],
+    "output_status": "CANDIDATE_ONLY_UNVALIDATED"
+  },
+  "evidence": {
+    "camera_and_utility_boundary": {
+      "camera_reconstruction_gate": "failed",
+      "downstream_drought_utility": "failed",
+      "experiment": "EXP-0125",
+      "quality_report_sha256": "e5f02c2f16d2f89cb70028d22a8bc64e8407d3a269ab824752503f1353928cf1",
+      "status": "FAIL_PROXIMAL_CUBE_CAMERA_RECONSTRUCTION"
+    },
+    "development_point_spectra": {
+      "candidate_equal_group_mae": 0.041303253785398904,
+      "experiment": "EXP-0123",
+      "groups": 468,
+      "naive_equal_group_mae": 0.10863508359979818,
+      "quality_report_sha256": "f20680841efd7d50807eb2d08e8d337f3f5593bdbdd59e59383959e08fe4efaa",
+      "status": "PASS_REAL_PHYSICS_REPAIR_DEVELOPMENT"
+    },
+    "external_point_spectra": {
+      "candidate_equal_site_mae": 0.05143802881892087,
+      "experiment": "EXP-0124",
+      "naive_equal_site_mae": 0.1150138390609532,
+      "quality_report_sha256": "2517a03f8280c078845bfe4b240d44a56e3bfd8567f235d7e80c04b4895ce360",
+      "sites": 9,
+      "status": "PASS_EXTERNAL_NASA_SITE_TRANSFER_DEVELOPMENT"
+    }
+  },
+  "frozen_decoder": {
+    "candidate_states": 1213,
+    "family": "P1_affine_R",
+    "intercept_r": 0.013675502624398372,
+    "n_struct": 1.6,
+    "operator": "official prospect R package 2.0.0",
+    "operator_metadata": {
+      "bands": "501",
+      "end_nm": "2400",
+      "prospect_package_version": "2.0.0",
+      "samples": "10917",
+      "start_nm": "400",
+      "step_nm": "4"
+    },
+    "slope_r": 0.965228931274191,
+    "source_config_sha256": "a2390a00458fcc38e53c2ee6ee9cbd899856701abba9adf5c2174fd254bbc5ba",
+    "source_experiment": "EXP-0123",
+    "source_implementation_sha256": "5efd7d01ee91fea5367282df6148208850b07123475e151873e44e7017b0e65c"
+  },
+  "input_contract": {
+    "absolute_context_range_nm": [
+      400.0,
+      1000.0
+    ],
+    "clipping": "forbidden",
+    "end_at_or_above_nm": 980.0,
+    "forbidden_inputs": [
+      "radiance",
+      "percent",
+      "SNV",
+      "absorbance",
+      "normalized spectra",
+      "target/SWIR bands"
+    ],
+    "input_kind": "measured_absolute_leaf_reflectance",
+    "maximum_gap_nm": 10.0,
+    "minimum_bands": 100,
+    "reflectance_range": [
+      -0.05,
+      1.0
+    ],
+    "reflectance_unit": "fraction",
+    "start_at_or_below_nm": 420.0,
+    "strictly_increasing_unique_wavelengths": true
+  },
+  "licenses": {
+    "CABO_2018_2019_Leaf_Level_Spectra_v2": {
+      "doi": "10.21232/58kApoRy",
+      "license_id": "cc-by",
+      "title": "Creative Commons Attribution",
+      "url": "https://data.ecosis.org/dataset/a12286ac-929f-4e3e-9b9c-517e10fe4087",
+      "version": "not specified by publisher"
+    },
+    "prospect_R_package_2_0_0": {
+      "commit": "0df0f4fa6dab1ca659e3c72b52800bf470503733",
+      "license": "MIT",
+      "url": "https://github.com/jbferet/prospect"
+    },
+    "runtime_code": "Apache-2.0"
+  },
+  "model_id": "alphaspectra-bridge-p1-20260727",
+  "provenance": {
+    "bank_contains": "affine-mapped PROSPECT reflectance states derived from public CABO training-group trait medians",
+    "bank_excludes": "sample identifiers, disease labels, private data, target observations, and raw spectra",
+    "build_script": "scripts/product/export_bridgecheck_model.py in the AlphaSpectra research workspace",
+    "product_contract_sha256": "8f358c71ca3146e6df1d7ae3b583b940619b111843608615645964e16c2c7d8a"
+  },
+  "released_on": "2026-07-27",
+  "schema_version": "1.0",
+  "spectral_grid": {
+    "context_count": 151,
+    "context_range_nm": [
+      400.0,
+      1000.0
+    ],
+    "count": 501,
+    "end_nm": 2400.0,
+    "start_nm": 400.0,
+    "step_nm": 4.0,
+    "target_above_nm": 1050.0,
+    "target_count": 338,
+    "target_range_nm": [
+      1052.0,
+      2400.0
+    ]
+  },
+  "support_reference": {
+    "context_rmse_quantiles": {
+      "maximum": 0.07465457448709398,
+      "q50": 0.011355714589444222,
+      "q90": 0.027095264400786148,
+      "q95": 0.03553291791651528,
+      "q99": 0.04750305572672911
+    },
+    "groups": 1213,
+    "kind": "descriptive_CABO_training_group_context_distance_not_calibrated_uncertainty"
+  },
+  "version": "0.1.0"
+}

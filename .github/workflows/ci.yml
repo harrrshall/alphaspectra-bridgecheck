@@ -1,0 +1,128 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-package:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12"]
+
+    steps:
+      - name: Check out release source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Set up Node for browser parity
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Reject secret and research-data paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          forbidden='(^|/)(\.secrets|data|outputs)(/|$)|(^|/)\.env($|\.)|\.(pem|key|p12)$'
+          if git ls-files | grep -E "$forbidden"; then
+            echo "Refusing to package a tracked secret, research-data or output path." >&2
+            exit 1
+          fi
+
+      - name: Install test and build dependencies
+        run: python -m pip install ".[api,test,build]"
+
+      - name: Verify frozen artifact and public metadata
+        run: |
+          bridgecheck info > /tmp/bridgecheck-model-info.json
+          python -c "from bridgecheck.artifact import BridgeArtifact; BridgeArtifact.load()"
+
+      - name: Run tests
+        run: python -m pytest
+
+      - name: Build wheel and source distribution
+        run: python -m build
+
+      - name: Verify distribution payload
+        shell: python
+        run: |
+          from pathlib import Path
+          from zipfile import ZipFile
+
+          wheels = list(Path("dist").glob("*.whl"))
+          if len(wheels) != 1:
+              raise SystemExit(f"expected one wheel, found {len(wheels)}")
+          with ZipFile(wheels[0]) as archive:
+              names = archive.namelist()
+          required_suffixes = {
+              "bridgecheck/model/bridge_v1.f64",
+              "bridgecheck/model/manifest.json",
+              "licenses/LICENSE",
+              "licenses/NOTICE",
+              "licenses/DATA_ATTRIBUTION.md",
+              "licenses/THIRD_PARTY_NOTICES.md",
+          }
+          missing = [
+              suffix for suffix in sorted(required_suffixes)
+              if not any(name.endswith(suffix) for name in names)
+          ]
+          if missing:
+              raise SystemExit(f"wheel is missing required release files: {missing}")
+
+      - name: Inspect distributions
+        run: |
+          python -m pip install --force-reinstall dist/*.whl
+          bridgecheck info > /tmp/bridgecheck-installed-model-info.json
+          python -c "from bridgecheck.artifact import BridgeArtifact; BridgeArtifact.load()"
+
+      - name: Upload distributions
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-distributions
+          path: dist/*
+          if-no-files-found: error
+
+  container-smoke:
+    runs-on: ubuntu-latest
+    needs: test-and-package
+
+    steps:
+      - name: Check out release source
+        uses: actions/checkout@v4
+
+      - name: Build container
+        run: docker build --tag bridgecheck-ci:latest .
+
+      - name: Start container
+        run: docker run --detach --name bridgecheck-ci --publish 127.0.0.1:8080:8080 bridgecheck-ci:latest
+
+      - name: Wait for verified health response
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8080/healthz > /tmp/bridgecheck-health.json; then
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs bridgecheck-ci
+          exit 1
+
+      - name: Remove container
+        if: always()
+        run: docker rm --force bridgecheck-ci

@@ -1,0 +1,63 @@
+{
+  "artifact_array_sha256": "1d64d6a0ec1dec48c2fa0c9c33c4cfcef832e714ecf88aaee55941a0d5fc2ac0",
+  "camera_and_utility_boundary": {
+    "experiment": "EXP-0125",
+    "headline_metrics": {
+      "VNIR_only_brier": 0.2584158988686304,
+      "VNIR_plus_measured_SWIR_reference_brier": 0.2631401239372409,
+      "VNIR_plus_reconstructed_SWIR_brier": 0.2654655572902169,
+      "candidate_equal_plant_mae": 0.07383201106887417,
+      "naive_equal_plant_mae": 0.14715558484661687
+    },
+    "maximum_absolute_context_rmse_difference": 5.551115123125783e-17,
+    "maximum_absolute_prediction_difference": 0.0,
+    "negative_boundary_checks": {
+      "all_delta_bins_gate_remains_false": true,
+      "downstream_utility_pass_is_false": true,
+      "reconstructed_utility_gate_remains_false": true,
+      "reconstruction_pass_is_false": true,
+      "scale_decision_is_do_not_scale": true,
+      "status_is_frozen_camera_failure": true,
+      "target_validity_gate_remains_false": true
+    },
+    "parity_checks": {
+      "all_230_candidate_indices_exact": true,
+      "all_230_x_248_predictions_bit_exact": true,
+      "context_rmse_matches_within_1e_15": true
+    },
+    "pass": true,
+    "population": {
+      "cubes": 230,
+      "native_target_bands": 248
+    },
+    "quality_report_sha256": "e5f02c2f16d2f89cb70028d22a8bc64e8407d3a269ab824752503f1353928cf1",
+    "sealed_predictions_sha256": "79f420cfbe462b80bbc563b49f1430bc64a2698a4e35ba96c7b7659d7febffe0"
+  },
+  "checks": {
+    "EXP0124_exact_external_prediction_parity": true,
+    "EXP0125_exact_camera_prediction_parity_and_negative_boundary": true,
+    "artifact_array_sha256_is_frozen": true,
+    "manifest_sha256_is_frozen": true
+  },
+  "claim": "software/evidence parity only; no scientific promotion beyond the frozen reports",
+  "external_point_spectrum_replication": {
+    "checks": {
+      "all_691_candidate_indices_exact": true,
+      "all_691_x_338_predictions_bit_exact": true
+    },
+    "experiment": "EXP-0124",
+    "maximum_absolute_prediction_difference": 0.0,
+    "pass": true,
+    "population": {
+      "spectra": 691,
+      "target_bands": 338
+    },
+    "sealed_predictions_sha256": "e6378fd242021b4e600ab882cfb016acfbedf74661ff9237131942b85fb8b35b"
+  },
+  "manifest_sha256": "da3d63a6f535219a618f6b2a118693f59f2aa001a75480372a163a480ab4d2bd",
+  "model_id": "alphaspectra-bridge-p1-20260727",
+  "release": "AlphaSpectra BridgeCheck 0.1.0",
+  "schema_version": "1.0",
+  "status": "PASS_RELEASE_EVIDENCE_PARITY",
+  "verified_on": "2026-07-27"
+}

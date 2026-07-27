@@ -1,0 +1,7 @@
+{
+  "name": "alphaspectra-bridgecheck-browser",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Dependency-free browser client for the AlphaSpectra BridgeCheck artifact"
+}
