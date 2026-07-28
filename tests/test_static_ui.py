@@ -135,6 +135,8 @@ def test_bandtrace_release_page_is_static_bounded_and_hash_specific() -> None:
     assert "Byte-identical hosted artifacts" in html
     assert "T0_BIOLOGICAL_TRANSPORT_NOT_EVALUATED" in html
     assert "not a compatibility certificate" in html
+    for removed in ("Separate product", "Apache-2.0", "Local Linux CLI", "Linux CLI · v0.1.0"):
+        assert removed not in html
     assert "e6800aec7e8a8411940a1f53ed9ae56273bacc0c8c22ecccc72e0c9de9938e7f" in html
     assert "6ed50ec69baf2031ef3025bf6dc639c7f15777ae78b9fcb712a8351dd0725cb1" in html
     assert "../downloads/bandtrace/alphaspectra_bandtrace-0.1.0-py3-none-any.whl" in parser.hrefs
