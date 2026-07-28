@@ -25,6 +25,20 @@ replace a calibrated sensor, or provide calibrated uncertainty. Generated bands 
 silently concatenated with measurements. A dataset-specific reconstruction pass still requires a
 separate downstream measurement-value study.
 
+## Companion tool: BandTrace
+
+[BandTrace](https://harrrshall.github.io/alphaspectra-bridgecheck/bandtrace/) is a separate local
+Linux CLI for checking whether a declared sensor-to-model spectral route agrees with an executable-
+reported tap, whether required bands affect one selected numeric output on adequate probes, and
+whether routed sensor response functions remain within supplier-declared training support. It
+reports executable (`X`), spectral-support (`S`) and biological-transport (`T`) states separately.
+
+The verified reference release reaches `X3 + S3 + T0`; `T0` means biological transport was **not
+evaluated**. That reference result is not evidence that a customer model/camera pair will pass.
+BandTrace does not run in the BridgeCheck browser app, BridgeCheck sends it no inputs, and neither
+product validates the other. See the [product and licensing matrix](PRODUCTS.md) and the independent
+[BandTrace source and release record](bandtrace/README.md).
+
 ## Quick start
 
 ```bash

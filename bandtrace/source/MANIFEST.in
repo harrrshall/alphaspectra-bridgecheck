@@ -1,0 +1,13 @@
+include LICENSE
+include NOTICE
+include README.md
+include CHANGELOG.md
+include SECURITY.md
+include THIRD_PARTY_NOTICES.md
+include tox.ini
+include examples/make_reference_bundle.py
+include tools/build_release.py
+recursive-include src/bandtrace/normative *.md *.yaml
+recursive-include tests *.py
+recursive-exclude * __pycache__
+global-exclude *.py[cod]

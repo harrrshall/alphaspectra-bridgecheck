@@ -1,0 +1,180 @@
+Metadata-Version: 2.4
+Name: alphaspectra-bandtrace
+Version: 0.1.0
+Summary: Deterministic local model-sensor spectral conformance preflight.
+Author: AlphaSpectra
+License-Expression: Apache-2.0
+Project-URL: Homepage, https://harrrshall.github.io/alphaspectra-bridgecheck/bandtrace/
+Project-URL: Repository, https://github.com/harrrshall/alphaspectra-bridgecheck/tree/bandtrace-v0.1.0/bandtrace/source
+Project-URL: Issues, https://github.com/harrrshall/alphaspectra-bridgecheck/issues
+Project-URL: Security, https://github.com/harrrshall/alphaspectra-bridgecheck/security/advisories/new
+Keywords: hyperspectral,spectroscopy,sensor,model assurance,conformance
+Classifier: Development Status :: 3 - Alpha
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+License-File: NOTICE
+License-File: THIRD_PARTY_NOTICES.md
+Requires-Dist: numpy<3,>=1.26
+Requires-Dist: PyYAML<7,>=6.0
+Provides-Extra: test
+Requires-Dist: pytest<10,>=8; extra == "test"
+Provides-Extra: build
+Requires-Dist: setuptools==83.0.0; extra == "build"
+Requires-Dist: wheel==0.47.0; extra == "build"
+Dynamic: license-file
+
+# BandTrace
+
+BandTrace v0.1 is a deterministic, local preflight for a numeric spectral model and a target
+sensor. It reports three deliberately separate results:
+
+- whether a declared target-to-model route agrees with the adapter-reported pre-core tap on the
+  frozen challenges (`X0`–`X3`);
+- whether routed target response functions remain inside the supplier-declared training support
+  (`S0`–`S3`); and
+- the fixed biological state `T0_BIOLOGICAL_TRANSPORT_NOT_EVALUATED`.
+
+Even a clean `X3 + S3 + T0` result is only eligible for an external transport test. It is not a
+certificate, biological validation, deployment approval, calibration claim, or safety claim.
+
+## Install and run
+
+BandTrace requires Python 3.10 or newer on Linux. Version 0.1's completed-audit publication uses
+Linux `renameat2(RENAME_NOREPLACE)` and intentionally has no weaker cross-platform fallback.
+
+```bash
+python -m pip install .
+bandtrace make-reference-bundle /tmp/bandtrace-reference
+bandtrace audit /tmp/bandtrace-reference --output-dir /tmp/bandtrace-report
+```
+
+The same command is available without the console-script wrapper:
+
+```bash
+python -m bandtrace make-reference-bundle /tmp/bandtrace-reference
+python -m bandtrace audit BUNDLE_DIR --output-dir OUTPUT_DIR
+```
+
+The example creates a clean, hash-pinned `numpy-linear-v1` reference bundle. A completed audit
+writes exactly:
+
+- `report.json`
+- `report.html`
+- `route.csv`
+- `canary_outputs.npz`
+- `manifest.sha256`
+
+Exit code `0` means the audit completed without a conformance fault. Exit `2` means the bundle is
+invalid, `3` means adapter/output execution failed, and `4` means a report completed with at least
+one conformance fault. `OUTPUT_DIR` must not already exist and its parent must already be a
+directory. BandTrace writes and fsyncs a fresh sibling staging directory, writes the output
+manifest last, then uses Linux `renameat2(RENAME_NOREPLACE)` to atomically publish without
+clobbering a destination created concurrently. There is no unsafe rename fallback. A rare failure
+to fsync or revalidate the parent after successful publication returns an output error without
+rolling back or deleting the destination path. The filesystem threat model trusts all processes
+running as BandTrace's Unix UID; use a dedicated account and private output parent if that is not
+acceptable. `renameat2` cannot bind its source name to the already-open staging inode across the
+final check-to-rename window. If exit code `3` leaves a destination, treat it as
+untrusted and not as a BandTrace report. Post-publication defense against later concurrent mutation
+or removal is also outside v0.1. The private-parent requirement also applies to prepublication
+cleanup because POSIX cannot condition `rmdir` on an inode; cleanup rechecks identity immediately
+before removal and never recurses.
+
+## Bundle boundary
+
+The bundle root contains `bandtrace.yaml`, which SHA-256 pins the model contract, sensor contract,
+probe NPZ, route contract, executable artifact, and every additional adapter asset. Inputs are
+strict and fail closed: labels and endpoints are outside the probe contract; IDs and units are
+explicit; NPZ files are non-pickled; and undeclared files cannot be used as pinned subprocess
+assets. The loader pins the root directory, opens every path component descriptor-relative without
+following symlinks, and holds the opened regular files through the aggregate gate and parse so a
+concurrent path swap cannot redirect reads outside the bundle.
+
+Two adapters are supported:
+
+- `numpy-linear-v1` is the safe reference instrument and reads a bounded NumPy NPZ artifact.
+- `subprocess-npz-v1` runs a pinned POSIX argv protocol. Its code and returned tap remain
+  user-trusted. BandTrace is not a sandbox; run subprocess bundles in an independently
+  network-disabled containment boundary.
+
+Subprocess file arguments use only `{artifact}`, `{input_npz}`, `{output_npz}`, or
+`{asset:<manifest_key>}`. Asset placeholders must name hash-pinned manifest extras. These are the
+only file references BandTrace interprets, stages, and verifies. Every ordinary argv token is passed
+verbatim and may name an ambient absolute or relative path to trusted subprocess code; such a
+dependency is unpinned and explicitly unattested.
+
+The frozen canary schedule is rejected before adapter construction when its cumulative float64
+request-probe payload would exceed 4 GiB. The cumulative 600-second adapter wall threshold is
+measured at checkpoints and is not a hard end-to-end deadline: synchronous parent work and cleanup
+cannot be preempted, so use an external supervisor when a hard deadline is required.
+Subprocess cleanup attempts a same-group `SIGKILL` before reaping the leader. If the OS rejects
+that signal, the run fails and BandTrace still attempts to kill and reap the leader, but cleanup of
+same-group descendants cannot be guaranteed.
+
+The distribution carries frozen copies bundled in this build of the
+[`BANDTRACE_PRODUCT.md`](src/bandtrace/normative/BANDTRACE_PRODUCT.md) contract and
+[`bandtrace_v1.yaml`](src/bandtrace/normative/bandtrace_v1.yaml) machine policy. Their exact
+SHA-256 digests are embedded in the installed source and verified before an audit can execute or
+publish a report. This catches missing or internally inconsistent build resources; it is not an
+external signature. Authenticity requires an independently trusted distribution digest or signature.
+
+The report's installed-source digest covers regular `*.py` files only. It is source provenance, not
+execution attestation: interpreter, bytecode, native dependency, environment, and in-memory state
+remain outside that hash, and the runtime fingerprint is non-exhaustive.
+
+## Public Python API
+
+```python
+from pathlib import Path
+
+from bandtrace import load_bundle, run_audit, verify_packaged_normative_authority
+
+print(verify_packaged_normative_authority())
+
+bundle = load_bundle(Path("bundle"))
+print(bundle.model.model_id)
+
+result = run_audit(Path("bundle"), Path("report"))
+print(result.exit_code, result.report["states"])
+```
+
+`load_bundle` validates without executing the adapter. `run_audit` accepts bundle and output
+directory paths. The generated artifacts are deterministic for the instrument-controlled NumPy
+reference when the bundle and pinned CPU software environment are unchanged.
+
+## Reproducible release build
+
+Build the public v0.1 artifacts from a clean source checkout with the release epoch:
+
+```bash
+SOURCE_DATE_EPOCH=1785196800 python -I tools/build_release.py --output-dir dist
+```
+
+The output directory must not exist. Isolated Python mode is mandatory. The builder creates a
+minimal-environment virtualenv and installs the exact `setuptools` and `wheel` versions and PyPI
+wheel SHA-256 hashes embedded in the builder, builds and normalizes the source archive, then builds
+the wheel from that exact normalized source archive. It prints the SHA-256 of the two artifacts.
+The source archive uses sorted USTAR members, fixed gzip/member timestamps, numeric owner/group zero
+with empty owner names, directory mode `0755`, and regular-file mode `0644`. The backend-produced
+wheel is copied without post-build rewriting after its package bytes, legal files, console entry
+point, dist-info layout, and every RECORD hash and size are checked against the normalized source
+archive.
+
+The public v0.1 source and release are hosted as a separately namespaced companion inside the
+[AlphaSpectra BridgeCheck repository](https://github.com/harrrshall/alphaspectra-bridgecheck/tree/bandtrace-v0.1.0/bandtrace),
+with a static [BandTrace release page](https://harrrshall.github.io/alphaspectra-bridgecheck/bandtrace/).
+The repository's private vulnerability-reporting channel is
+[GitHub Security Advisories](https://github.com/harrrshall/alphaspectra-bridgecheck/security/advisories/new).
+A checksum manifest can detect byte changes relative to a trusted copy; it is not a signature and
+does not authenticate where a distribution came from. Verify hosted bytes against the platform-
+reported release digest and the publication receipt before installation.
+
+## License
+
+Apache License 2.0. See `LICENSE` and `NOTICE`.

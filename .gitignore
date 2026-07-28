@@ -12,6 +12,12 @@ dist/
 .venv/
 venv/
 
+# BandTrace is an intentionally vendored, independently verified public release.
+!bandtrace/dist/
+!bandtrace/dist/**
+!bandtrace/source/src/alphaspectra_bandtrace.egg-info/
+!bandtrace/source/src/alphaspectra_bandtrace.egg-info/**
+
 # JavaScript tooling (the shipped browser application has no runtime dependencies)
 node_modules/
 

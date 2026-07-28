@@ -7,6 +7,11 @@ project uses semantic versioning for public artifacts.
 
 ### Changed
 
+- Added a separately namespaced BandTrace source/release subtree and static companion page. The
+  Linux CLI does not execute in the BridgeCheck browser, receives no BridgeCheck inputs, and does
+  not alter BridgeCheck's model, evidence, output typing or claim ceiling.
+- Added a repository-level product/licensing matrix and product-scoped release links so BridgeCheck's
+  transformed numerical bank terms are never presented as BandTrace's Apache-2.0-only terms.
 - Rebuilt the browser application as a compact research notebook with publication-style typography,
   a dominant scientific plot, tabular evidence and a reduced visual palette.
 - Added five one-click local example spectra with explicit provenance, expected support
@@ -19,6 +24,8 @@ project uses semantic versioning for public artifacts.
 
 ### Tests
 
+- Added static product-boundary, artifact-link, hash, accessibility and no-browser-execution checks
+  for the BandTrace companion surface.
 - Added frozen expected-state/hash/support checks for every browser example and static accessibility,
   local-dependency, provenance and responsive-design invariants.
 

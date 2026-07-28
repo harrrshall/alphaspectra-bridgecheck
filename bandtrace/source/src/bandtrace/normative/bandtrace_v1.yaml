@@ -1,0 +1,654 @@
+schema_version: "1.0"
+policy_id: bandtrace-0.1-r29
+title: BandTrace v0.1 model-sensor conformance preflight
+status: iteratively_specified_rev29_frozen_before_coherent_release_validation
+frozen: true
+frozen_date: "2026-07-27"
+implementation_was_in_progress_during_revisions_1_through_28: true
+pre_rev29_live_test_snapshots_are_development_only: true
+
+purpose:
+  question: >
+    Can a deterministic local report establish declared-to-reported-tap agreement,
+    probe-local numeric output dependence, and target-SRF position relative to supplier-declared
+    training support without conflating those results with biological transport?
+  always_nonclaim: T0_BIOLOGICAL_TRANSPORT_NOT_EVALUATED
+  forbidden_claims:
+    - certificate
+    - deployment approval
+    - disease accuracy or diagnosis
+    - field transport
+    - causal validity
+    - calibrated uncertainty
+    - safety or regulatory conformity
+
+limits:
+  min_probes: 16
+  max_probes: 256
+  max_bands: 512
+  max_spatial_cells_per_probe: 262144
+  max_probe_file_bytes: 268435456
+  max_expanded_float64_probe_bytes: 268435456
+  max_canary_invocation_probe_bytes: 268435456
+  max_adapter_output_bytes: 268435456
+  subprocess_timeout_seconds: 120
+  max_manifest_bytes: 1048576
+  max_manifest_declared_files: 32
+  max_manifest_declared_total_stat_bytes: 536870912
+  manifest_file_count_and_total_stat_bytes_preflight_before_payload_read_or_hash: true
+  max_npz_members: 32
+  max_npz_uncompressed_bytes: 536870912
+  max_npz_compression_ratio: 100.0
+  max_subprocess_stdout_stderr_bytes: 1048576
+  adapter_total_measured_seconds_failure_threshold: 600
+  adapter_total_measured_seconds_failure_threshold_applies_to: [numpy-linear-v1, subprocess-npz-v1]
+  adapter_total_hard_deadline: false
+  synchronous_parent_and_cleanup_preemptible: false
+  subprocess_child_active_wall_poll: true
+  external_hard_deadline_supervisor_required: true
+  subprocess_cumulative_wall_scope:
+    - parent_request_serialization
+    - child_execution
+    - response_decode_and_validation
+    - invocation_cleanup
+  max_adapter_invocations_formula: 2 * target_bands + 12
+  max_c2_shift_cell_comparisons: 536870912
+  c2_shift_cell_comparisons_formula: (probe_count - 1) * probes.size
+  max_cumulative_adapter_request_probe_bytes: 4294967296
+  cumulative_adapter_request_probe_bytes_schedule:
+    - C0_three_full_baseline_requests
+    - C5_one_full_target_neutral_request
+    - C1_every_basis_chunk_request
+    - C1_one_rank4_spatial_request_when_applicable
+    - C2_one_full_request_per_target_band
+    - C3_six_full_metadata_requests
+    - C4_two_full_requests_when_target_bands_greater_than_one
+  cumulative_adapter_request_probe_bytes_is_exact_sum_of_float64_request_probes_nbytes: true
+  cumulative_adapter_request_probe_bytes_preflight_before_adapter_construction: true
+  cumulative_request_byte_cap_is_not_peak_rss_guarantee: true
+  catchable_memory_error_state: invalid_bundle_or_execution_failure
+  operating_system_oom_kill_cannot_be_converted_to_exit_code: true
+  max_abs_declared_scalar_and_probe_value: 1000000000000.0
+  max_abs_numpy_reference_artifact_numeric_value: 1000000000000.0
+  reflectance_raw_value_min: -0.1
+  reflectance_raw_value_max: 2.0
+  min_normalization_scale: 0.01
+  max_normalization_scale: 2.0
+  normalization_offset_must_lie_inside_model_valid_range: true
+  min_fwhm_nm: 1.0
+  max_fwhm_nm: 50000.0
+  min_spectral_wavelength_nm_after_unit_conversion: 100.0
+  max_spectral_wavelength_nm_after_unit_conversion: 100000.0
+  spectral_wavelength_bound_applies_to_centers_support_endpoints_and_srf_coordinates: true
+  min_valid_range_width: 0.1
+  max_abs_adapter_response_value: 1.0e150
+  max_route_matrix_entries: 262144
+  max_each_nonmanifest_output_bytes: 268435456
+  max_all_five_output_bytes: 536870912
+  every_derived_static_quantity_must_be_finite: true
+
+radiometry:
+  accepted_quantities: [unitless_reflectance_factor]
+  radiance_and_raw_dn_outside_v0_1: true
+  model_sensor_exact_match_required: true
+  label_is_supplier_assertion_not_calibration_traceability: true
+
+adapters:
+  supported: [numpy-linear-v1, subprocess-npz-v1]
+  subprocess_supported_platform: POSIX
+  release_security_target: Linux
+  completed_audit_publication_platform: Linux
+  completed_audit_publication_requires_renameat2_noreplace: true
+  unsafe_publication_fallback_forbidden: true
+  cross_platform_byte_identity_claimed: false
+  subprocess_trust_state: USER_CODE_TRUSTED
+  subprocess_dependency_state: SUBPROCESS_DEPENDENCIES_UNATTESTED
+  subprocess_runtime_fingerprint_is_non_exhaustive: true
+  route_assurance:
+    numpy-linear-v1: INSTRUMENT_CONTROLLED_REFERENCE
+    subprocess-npz-v1: SUPPLIER_REPORTED_TAP
+  subprocess_tap_limit: The process can return a decoy tap; BandTrace cannot attest that it feeds the selected output.
+  forbidden:
+    - pickle or joblib deserialization
+    - remote or network inference
+    - stochastic or generative output
+    - labels-only or argmax-only output
+    - opaque in-model preprocessing for route states
+
+route:
+  matrix_orientation: model_channels_by_target_bands
+  normalization_equation: z_i = (sum_j W[i,j] * x_j - offset_i) / scale_i
+  normalization_scale_strictly_positive: true
+  semantic_execution_order: target_values_then_route_then_normalization_then_spatial_operation
+  rank2_none_canonical_binary64_order: target_values_then_route_then_normalization
+  rank4_mean_canonical_binary64_order: float64_mean_each_target_band_over_h_w_then_route_then_normalization
+  rank4_mean_first_is_mathematically_equivalent_by_linearity: true
+  rank4_n_times_model_channels_times_h_times_w_intermediate_forbidden: true
+  spatial_operations:
+    none: rank_2_only
+    mean: rank_4_mean_over_h_w
+  eligible_operations:
+    - selection_or_permutation
+    - nonnegative_row_normalized_linear_resampling
+    - declared_per_channel_affine_scaling
+    - fixed_declared_spatial_operation
+  row_sum_tolerance: 0.000001
+  numeric_tolerance: 0.000001
+  negative_weight_tolerance: 0.0
+  negative_declared_weight_state: invalid_bundle_exit_2
+  positive_route_weight_minimum: 0.000000000001
+  route_weight_domain: exactly_zero_or_at_least_positive_route_weight_minimum
+  selection_positive_weight_definition: W_ij > 0 exactly
+  routed_raw_domain_lower: sum_j W_ij * sensor_valid_lower_j
+  routed_raw_domain_upper: sum_j W_ij * sensor_valid_upper_j
+  routed_raw_domain_must_be_contained_in_model_valid_range: true
+  routed_raw_domain_arithmetic: exact_rational_of_parsed_binary64_inputs
+  routed_raw_domain_tolerance: 0.0
+  routed_raw_domain_failure: routed_domain_outside_model_valid_range
+  explicit_unique_id_tied_axis_permutations_are_canonicalized_not_faulted: true
+  model_and_target_id_namespaces_are_separate: true
+  same_text_id_across_namespaces_is_legal: true
+
+determinism:
+  replay_count: 3
+  replay_jitter_max: 0.0000001
+  base_seed_prefix_utf8_nul: bandtrace-mutation-seed-v1
+  base_seed_fields_in_order: [model, sensor, probe, route, policy]
+  model_sensor_probe_route_seed_values: lowercase_sha256_hex_of_exact_manifest_pinned_file_bytes
+  seed_field_framing: u16be_label_length || label_bytes || u64be_value_length || value_bytes
+  hash_value_encoding: lowercase_ascii_hex
+  policy_id_encoding: utf8
+  canary_seed_framing: bandtrace-canary-v1_nul || base_seed_bytes || u16be_canary_id_length || canary_id_utf8
+  c4_shift: 1 + u64be(canary_seed_first_8_bytes) mod (target_bands - 1)
+  c4_permutation: p[i] = (i + shift) mod target_bands
+  known_answer:
+    model_hash: "0000000000000000000000000000000000000000000000000000000000000000"
+    sensor_hash: "1111111111111111111111111111111111111111111111111111111111111111"
+    probe_hash: "2222222222222222222222222222222222222222222222222222222222222222"
+    route_hash: "3333333333333333333333333333333333333333333333333333333333333333"
+    policy_id: bandtrace-0.1-r29
+    base_seed_hex: d9d2f0dc8aefdc56e2b3d91ca7112b698b7463f4f0a38747f7bd1b6c5e3257bf
+    c4_target_bands: 5
+    c4_shift: 1
+    c4_permutation: [1, 2, 3, 4, 0]
+    c3_rank_target_ids: [b0, b1, b2]
+    c3_wavelength_subseed_hex: 378a64babd2f4e1452b4b136a3578160c7ab195d0671e9fed8d0a86ff72c27c8
+    c3_wavelength_ranked_ids: [b1, b0, b2]
+    c3_wavelength_amplitudes_by_input_id: {b0: 0.5, b1: 0.25, b2: 0.75}
+    c3_fwhm_subseed_hex: 1b0f69a72d1def6ff200738011f2cb8d2cd1fd3acf44e56cbe12ad5a9c10ee6f
+    c3_fwhm_ranked_ids: [b1, b2, b0]
+    c3_fwhm_amplitudes_by_input_id: {b0: 0.75, b1: 0.25, b2: 0.5}
+  canonical_float_places: 8
+  identical_output_bytes_required: true
+  identical_output_bytes_scope: instrument_controlled_numpy_reference_release_fixture
+
+dependence:
+  required_dependence_target_band_ids_owner: model_contract
+  absolute_floor: 0.000001
+  replay_multiplier: 10.0
+  minimum_probe_fraction: 0.20
+  mutation_excitation_floor: 0.000001
+  insufficient_excitation_state: INCONCLUSIVE_INSUFFICIENT_EXCITATION
+  metadata_excitation_floor_nm: 0.000001
+  minimum_metadata_tuple_fraction: 0.20
+  insufficient_metadata_excitation_state: INCONCLUSIVE_INSUFFICIENT_METADATA_EXCITATION
+  output_scale: max(1,P99(abs(output - median(output))))
+  output_scale_is_translation_invariant: true
+  quantile_input: sorted_finite_flattened_vector
+  quantile_linear_interpolation_index: (n - 1) * q
+  quantile_linear_interpolation_formula: v[floor(h)] + (h - floor(h)) * (v[ceil(h)] - v[floor(h)])
+  median_quantile: 0.5
+  p99_quantile: 0.99
+  c3_selects_maximally_exciting_nonzero_cyclic_shift: true
+  c3_primary_mutation: wavelength_only_with_values_ids_and_fwhm_fixed
+  c3_secondary_mutation: fwhm_only_with_values_ids_and_wavelength_fixed
+  c3_nonuniform_rank_key_framing: sha256(canary_subseed || utf8_nul_rank_nul || u16be_id_utf8_length || id_utf8)
+  c3_nonuniform_rank_order: ascending_(key,id)
+  c3_nonuniform_amplitude: (zero_based_rank + 1) / (target_bands + 1)
+  c3_wavelength_magnitude_mutations_nm:
+    - clip(wavelength_nm + amplitude,100,100000)
+    - clip(wavelength_nm - amplitude,100,100000)
+  c3_fwhm_rank_factor: 1 + 0.01 * amplitude
+  c3_fwhm_magnitude_mutations:
+    - clip(fwhm_nm * rank_factor,1,50000)
+    - clip(fwhm_nm / rank_factor,1,50000)
+  c3_every_rotation_and_nonuniform_mutation_is_invoked_and_reported: true
+  c3_declared_or_undeclared_dependence_observed_if_any_adequately_excited_mutation_changes_output: true
+  c3_subseed_ids: [C3_wavelength_dependence, C3_fwhm_dependence]
+  conditioning_declarations_required: [wavelength_conditioned, fwhm_conditioned]
+  declared_true_metadata_field_requires_observed_dependence_for_x3: true
+  declared_true_metadata_field_with_insufficient_excitation_is_conformance_fault: true
+  declared_true_metadata_insufficient_excitation_fault: claimed_<field>_input_inconclusive
+  declared_false_metadata_field_with_observed_dependence_is_conformance_fault: true
+  declared_false_metadata_nonobservation_never_proves_global_nonuse: true
+  x3_requires_c3_pass_when_wavelength_conditioned: true
+  x3_requires_c3_pass_when_fwhm_conditioned: true
+  x3_requires_every_supplier_declared_required_target_id_excited_and_observed: true
+  insufficient_required_target_excitation_is_conformance_fault: true
+  required_target_ids_must_be_explicit_nonempty_and_unique: true
+  minimum_aggregate_absolute_route_weight: 0.0001
+  required_target_id_below_minimum_aggregate_route_weight_state: invalid_bundle_exit_2
+  nonrequired_positive_declared_route_weight_never_becomes_hidden_fault: true
+  observed_value_dependence_with_exactly_zero_declared_route_column_fault: hidden_resampling_or_extrapolation
+
+canary_construction:
+  c1_basis_rows: one_per_target_band_in_target_contract_order
+  c1_baseline_error_aggregates: maximum_over_all_three_replay_taps
+  c1_background: per_band_target_neutral
+  c1_active_value: farthest_valid_range_endpoint
+  c1_equal_endpoint_distance_tie: lower_endpoint
+  c1_rank4_layout: constant_over_original_h_w
+  c1_chunk_max_rows: 256
+  c1_chunk_max_float64_probe_bytes: 268435456
+  c1_minimum_expected_channel_tap_span: 0.000001
+  c1_recovered_raw_route_column_tolerance: 0.000001
+  c1_recovered_raw_route_formula: (basis_tap - neutral_tap) * scale / active_raw_delta
+  c1_recovered_raw_route_must_match_declared_w: true
+  c1_recovered_raw_offset_formula: sum_j(declared_W[i,j] * neutral_j) - neutral_tap_i * scale_i
+  c1_recovered_raw_offset_must_match_declared_offset: true
+  c1_declaration_only_same_arithmetic_recovery_must_match_declaration: true
+  c1_ill_conditioned_raw_recovery_state: INCONCLUSIVE_ILL_CONDITIONED_RAW_RECOVERY
+  c1_ill_conditioned_raw_recovery_is_conformance_fault: true
+  c1_ill_conditioned_raw_recovery_blocks: [X2_DECLARED_TAP_MATCHES_ROUTE_ON_CHALLENGES, X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES]
+  c1_observed_recovery_compares_directly_to_declaration: true
+  c1_two_tolerance_observed_reference_declaration_composition_forbidden: true
+  c1_insufficient_route_excitation_state: INCONCLUSIVE_INSUFFICIENT_ROUTE_EXCITATION
+  c1_insufficient_route_excitation_is_conformance_fault: true
+  c1_rank4_spatial_challenge_rows: 4
+  c1_rank4_spatial_masks:
+    - complementary_even_odd_flattened_h_w_cells
+    - asymmetric_three_level_cycle_and_reverse
+  c1_rank4_three_levels: [neutral, neutral_plus_one_quarter_active_delta, active]
+  c1_rank4_spatial_active_value: per_band_farthest_valid_range_endpoint
+  c1_rank4_spatial_background: per_band_target_neutral
+  c1_rank4_spatial_expected: declared_route_then_affine_then_exact_mean_over_h_w
+  c1_rank4_canonical_binary64_evaluation: float64_mean_each_target_band_over_h_w_then_declared_route_then_affine
+  c1_rank4_observed_wrong_reduction_fault: undeclared_spatial_reduction
+  c1_single_spatial_cell_all_singleton_preserving_reducers_equivalent_is_reported: true
+  c1_two_spatial_cell_mean_median_midrange_equivalence_is_reported: true
+  c2_candidate_shifts: all_nonzero_cyclic_probe_shifts
+  c2_shift_objective: maximize_fraction_with_max_abs_cell_change_above_0.000001
+  c2_tie_canary_id: C2_value_dependence:<target_band_id>
+  c2_tie_selection: u64be(canary_seed_first_8_bytes)_mod_sorted_tie_count
+  c2_every_returned_tap_must_match_declared_mutated_request: true
+  c3_every_returned_tap_must_match_declared_static_pre_core: true
+  c2_c3_tap_mismatch_fault: context_dependent_undeclared_tap
+  c4_tied_tuple_request: permute_values_ids_wavelength_and_fwhm_together
+  c4_tied_tuple_pre_core_max_abs_error: 0.000001
+  c4_tied_tuple_normalized_output_max_abs_error: 0.000001
+  c4_id_only_request: hold_values_wavelength_and_fwhm_positions_fixed_and_permute_ids
+  c4_id_only_expected_pre_core_change_must_be_strictly_greater_than: 0.000001
+  c4_id_only_pre_core_max_abs_error: 0.000001
+  c4_insufficient_id_binding_excitation_state: INCONCLUSIVE_INSUFFICIENT_ID_BINDING_EXCITATION
+  c4_insufficient_id_binding_excitation_is_conformance_fault: true
+  c4_pass_finding_requires_both_subtests: ID_BOUND
+  c4_failure_fault: reordered_bands
+  c4_single_band_state: NOT_APPLICABLE_SINGLE_BAND
+  c6_outside_definition: raw_unit_srf_or_analytic_gaussian_mass_inside_support_below_0.99
+  c6_crossed_endpoint: greater_outside_mass_with_lower_endpoint_tie
+  c6_nearest_supported_tie: lexical_target_id
+  c6_reuses_selected_c2_output_delta_vectors: true
+  c6_declared_and_tapped_column_tolerance: 0.000001
+  c6_minimum_shared_aggregate_absolute_weight: 0.0001
+  c6_tapped_columns_from_c1_basis_and_c5_neutral_taps: true
+  c6_output_effect_distance: max_abs((delta_outside / S) - (delta_edge / S))
+  c6_output_effect_indistinguishable_threshold: tau
+  c6_reports_every_outside_pair: true
+  c6_invalid_srf_marks_only_its_target_id_unresolved: true
+  c6_valid_outside_pairs_remain_reported_when_another_target_is_unresolved: true
+  c6_any_unresolved_target_keeps_aggregate_support_finding_unresolved: true
+  c6_in_support_partner_raw_mass_minimum: 0.99
+  c6_exactly_declared_collision_does_not_invalidate_executable_axis: true
+
+replay:
+  output_scale: max(1,P99(abs(output - median(output))))
+  output_jitter_statistic: max_over_probes((max_replay_output - min_replay_output) / S)
+  tap_jitter_statistic: max_over_elements((max_replay_pre_core - min_replay_pre_core) / S_tap)
+  tap_scale: max(1,P99(abs(first_replay_pre_core)))
+  output_and_tap_must_both_pass: true
+
+joint_neutral:
+  no_effect_state: NO_JOINT_TARGET_NEUTRAL_EFFECT_OBSERVED
+  neutral_cancellation_never_proves_prior_only: true
+  bounded_diagnostic: NO_TARGET_EFFECT_OBSERVED_ABOVE_FROZEN_THRESHOLD_ON_CHALLENGES
+  diagnostic_never_claims_prior_only_or_global_nonuse: true
+  diagnostic_requires_adequate_c2_and_no_dependence_for_every_target_band: true
+  diagnostic_requires_both_c3_fields_adequately_excited_and_no_dependence: true
+  diagnostic_requires_adequately_excited_c5_with_no_joint_effect: true
+
+input_security:
+  yaml_json_duplicate_keys_forbidden: true
+  yaml_aliases_and_object_constructors_forbidden: true
+  yaml_data_model: json_compatible_scalars_arrays_and_string_keyed_mappings_only
+  max_structured_document_nesting_depth: 32
+  parser_recursion_or_depth_failure: invalid_bundle_exit_2
+  paths_must_be_bundle_relative_regular_files: true
+  path_traversal_and_symlinks_forbidden: true
+  bundle_root_open: O_DIRECTORY_with_O_NOFOLLOW
+  bundle_root_identity_pinned_before_manifest_read: true
+  manifest_read_relative_to_pinned_bundle_root_descriptor: true
+  manifest_descriptor_held_and_revalidated_through_completed_parse: true
+  intermediate_path_component_open: O_DIRECTORY_with_O_NOFOLLOW_relative_to_parent_descriptor
+  final_path_component_open: O_NOFOLLOW_relative_to_parent_descriptor_and_must_be_regular
+  declared_file_descriptors_held_from_aggregate_stat_preflight_through_hash_and_parse: true
+  pathname_reopen_between_preflight_and_payload_read_forbidden: true
+  bundle_root_path_identity_reverified_after_load: true
+  bundle_root_rename_or_replacement_state: invalid_bundle_exit_2
+  every_manifest_declared_file_sha256_pinned: true
+  npz_allow_pickle: false
+  npz_member_names_validated: true
+  npz_object_dtype_forbidden: true
+  npz_allowed_zip_compression_methods: [STORED, DEFLATED]
+  npz_identifier_array_shape_dtype_size_and_item_width_validated_before_tolist: true
+  numpy_reference_known_field_dtype_and_shape_validated_before_any_numeric_cast: true
+  probe_float64_expansion_size_validated_before_cast: true
+  subprocess_shell: false
+  subprocess_new_process_group: true
+  subprocess_group_signal_attempt_after_every_successful_process_start: true
+  subprocess_leader_exit_observed_with_waitid_wnowait: true
+  subprocess_group_signal_attempt_once_before_leader_reap: true
+  subprocess_group_signal_delivery_guaranteed: false
+  subprocess_group_signal_failure_can_leave_members_running: true
+  subprocess_group_signal_failure_state: execution_failure
+  subprocess_direct_leader_kill_and_reap_fallback_configured_on_group_signal_error: true
+  subprocess_post_reap_numeric_pgid_signal_forbidden: true
+  subprocess_process_group_cleanup_is_not_sandbox_or_setsid_containment: true
+  temporary_directory_mode: "0700"
+  subprocess_invocation_directory_deleted_in_finally_before_next_invocation: true
+  subprocess_validated_response_arrays_copied_before_invocation_cleanup: true
+  subprocess_transient_invocation_staging_is_noncumulative: true
+  subprocess_peak_retained_invocation_directories: 1
+  temporary_directory_cleanup_required_for_conforming_adapter_not_hostile_containment: true
+  html_escape_all_values: true
+  csv_rfc4180_and_formula_prefix: true
+  subprocess_timeout_nonzero_exit_and_oversized_output_fail_closed: true
+
+adapter_output_contract:
+  input_members_exact: [probes, target_band_ids, wavelength_nm, fwhm_nm]
+  input_forbids_declared_route_normalization_or_expected_tap: true
+  subprocess_managed_file_placeholders_exact:
+    - "{artifact}"
+    - "{input_npz}"
+    - "{output_npz}"
+    - "{asset:<manifest_key>}"
+  subprocess_ordinary_argv_tokens_are_passed_verbatim: true
+  subprocess_ordinary_argv_tokens_may_name_ambient_absolute_or_relative_paths: true
+  subprocess_ordinary_argv_path_dependencies_are_unpinned_and_unattested: true
+  subprocess_asset_placeholder_must_reference_pinned_manifest_extra: true
+  subprocess_stages_only_artifact_and_explicit_argv_referenced_pinned_assets: true
+  subprocess_staging_excludes_model_sensor_route_and_original_probes: true
+  subprocess_staged_artifact_mode: "0700"
+  subprocess_asset_placeholder_at_argv0_runner_mode: "0700"
+  subprocess_other_staged_asset_mode: "0600"
+  subprocess_source_tree_executable_bits_otherwise_not_preserved: true
+  numpy_reference_artifact_independently_owns_route_normalization_and_spatial_operation: true
+  adapter_must_bind_columns_by_target_band_ids: true
+  output_dtype: float64
+  output_shape: [n_probes]
+  pre_core_dtype: float64
+  pre_core_shape: [n_probes, model_channels]
+  finite_only: true
+  implicit_reduction_squeeze_broadcast_forbidden: true
+
+spectral_support:
+  fwhm_is_mandatory_for_every_model_and_target_band: true
+  supplier_assertion_schema: literal_json_boolean_true_for_declared_support
+  supplier_assertion_string_coercion_forbidden: true
+  full_srf_is_optional_but_required_for_s3: true
+  validate_every_present_srf_even_when_coverage_is_partial: true
+  s3_requires_srf_for_every_model_and_target_band: true
+  srf_curve: piecewise_linear_through_supplied_knots
+  half_maximum_components_required: 1
+  derived_fwhm_crossing_interpolation: linear
+  declared_fwhm_consistency_tolerance: max(0.1_nm,0.10_times_declared_fwhm)
+  declared_center_consistency_tolerance: max(0.25_nm,0.25_times_declared_fwhm)
+  inconsistent_srf_state: S0_SUPPORT_UNRESOLVED
+  inconsistent_srf_fault: srf_metadata_inconsistent
+  required_available_srf_mass: 0.99
+  normalized_l1_max: 0.05
+  center_shift_nm_floor: 0.25
+  center_shift_fwhm_fraction: 0.25
+  center_fwhm_only_ceiling: S2_APPROX_WITHIN_SUPPORT
+  compare_each_routed_effective_srf_to_paired_training_channel_srf: true
+  normalize_each_target_srf_to_unit_area_before_route_mixing: true
+  effective_srf_formula: sum_j W[i,j] * unit_area_target_srf[j]
+  normalize_effective_srf_to_unit_area_after_route_mixing: true
+  effective_srf_includes_every_strictly_positive_declared_weight: true
+  spectral_route_resolvable_if_every_row_is_finite_nonnegative_and_has_positive_mass: true
+  positive_route_row_mass_defect_is_executable_axis_only: true
+  scalar_positive_route_row_rescaling_cannot_change_spectral_shape_state: true
+  zero_mass_route_row_state: S0_SUPPORT_UNRESOLVED
+  negative_declared_weight_cannot_reach_completed_spectral_state: true
+  internal_wavelength_unit_after_explicit_nm_or_um_conversion: nm
+  interpolation: native_piecewise_linear_interval_sides_on_sorted_union_grid
+  outside_supplied_domain_interval_side_values: exact_zero
+  native_endpoint_left_and_right_limits_may_differ: true
+  interval_is_inside_native_domain_only_if_both_endpoints_are_contained: true
+  support_mass_integration: sum_whole_interval_areas_contained_in_support
+  endpoint_to_distant_zero_outside_trapezoid_forbidden: true
+  l1_method: exact_absolute_linear_difference_per_interval
+  l1_sign_change_split: analytic_at_single_linear_difference_root
+  first_moment_segment_formula: dx/6*((2*x0+x1)*y0+(x0+2*x1)*y1)
+  s3_center_tolerance_uses_derived_training_fwhm: true
+  gaussian_available_mass: analytic_normal_cdf
+  gaussian_center: exact_mixture_moment
+  gaussian_l1_standardized_q_range: [-12, 12]
+  gaussian_l1_initial_q_step: 0.125
+  gaussian_l1_check_q_step: 0.0625
+  gaussian_l1_final_q_step: 0.03125
+  gaussian_l1_convergence_tolerance: 0.000001
+  gaussian_root_bisections: 60
+  maximum_gaussian_unique_knots: 250000
+  maximum_gaussian_component_point_evaluations_per_audit: 50000000
+  maximum_full_srf_unique_knots_per_channel: 250000
+  maximum_full_srf_interpolation_component_point_evaluations_per_audit: 50000000
+  full_srf_budget_charges:
+    - each_training_interval_side_evaluation_on_union_grid
+    - each_positive_weight_target_interval_side_evaluation_on_union_grid
+    - conservative_two_curve_equivalent_charge_on_logical_root_augmented_difference_grid
+  full_srf_initial_and_logical_root_augmented_grids_both_obey_unique_knot_ceiling: true
+  numerical_failure_state: S0_SUPPORT_UNRESOLVED
+  numerical_failure_fault: numerical_support_unresolved
+  training_srf_normalization: unit_area_before_comparison
+  minimum_srf_knots: 4
+  maximum_endpoint_response_fraction_of_peak: 0.0001
+
+states:
+  executable:
+    - X0_NO_EXECUTABLE_OBSERVATION
+    - X1_REPLAY_STABLE_ON_PROBES
+    - X2_DECLARED_TAP_MATCHES_ROUTE_ON_CHALLENGES
+    - X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES
+  spectral:
+    - S0_SUPPORT_UNRESOLVED
+    - S1_OUTSIDE_DECLARED_SUPPORT
+    - S2_APPROX_WITHIN_SUPPORT
+    - S3_SRF_WITHIN_DECLARED_SUPPORT
+  biological: [T0_BIOLOGICAL_TRANSPORT_NOT_EVALUATED]
+
+canaries:
+  - C0_replay
+  - C1_declared_tap_agreement
+  - C2_value_dependence
+  - C3_wavelength_dependence
+  - C3_fwhm_dependence
+  - C4_order
+  - C5_target_neutral
+  - C6_edge_alias
+
+fault_matrix:
+  list_semantics: planted_release_faults_not_exhaustive_runtime_severity_enum
+  planted_release_fault_entries_are_fixture_scenario_ids: true
+  planted_scenario_id_need_not_equal_emitted_runtime_fault_code: true
+  fault_identity_for_consumers: [code, axis, report_exit_context]
+  planted_release_faults:
+    - dropped_band
+    - edge_clamp
+    - reordered_bands
+    - id_ignored_metadata_sorted
+    - wavelength_nm_micron_mismatch
+    - missing_mandatory_fwhm
+    - invalid_present_srf
+    - routed_response_mismatch
+    - target_srf_outside_support
+    - claimed_wavelength_input_ignored
+    - undeclared_wavelength_input_used
+    - claimed_fwhm_input_ignored
+    - undeclared_fwhm_input_used
+    - routed_domain_outside_model_valid_range
+    - target_invariant_output_on_challenges
+    - stochastic_inference
+    - radiometric_quantity_mismatch
+    - undeclared_normalization
+    - undeclared_spatial_reduction
+    - context_dependent_undeclared_tap
+    - hidden_resampling_or_extrapolation
+    - duplicate_band_ids
+  expected:
+    dropped_band: {axis: route, exit: 4, forbidden_states: [X2_DECLARED_TAP_MATCHES_ROUTE_ON_CHALLENGES, X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES]}
+    edge_clamp: {axis: route, exit: 4, forbidden_states: [X2_DECLARED_TAP_MATCHES_ROUTE_ON_CHALLENGES, X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES]}
+    reordered_bands: {axis: route, exit: 4, forbidden_states: [X2_DECLARED_TAP_MATCHES_ROUTE_ON_CHALLENGES, X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES]}
+    id_ignored_metadata_sorted: {axis: route, exit: 4, emitted_fault: reordered_bands, forbidden_states: [X2_DECLARED_TAP_MATCHES_ROUTE_ON_CHALLENGES, X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES]}
+    wavelength_nm_micron_mismatch: {axis: bundle, exit: 2}
+    missing_mandatory_fwhm: {axis: bundle, exit: 2}
+    invalid_present_srf: {axis: spectral_support, exit: 4, required_state: S0_SUPPORT_UNRESOLVED}
+    routed_response_mismatch: {axis: spectral_support, exit: 4, required_state: S1_OUTSIDE_DECLARED_SUPPORT}
+    target_srf_outside_support: {axis: spectral_support, exit: 4, required_state: S1_OUTSIDE_DECLARED_SUPPORT}
+    claimed_wavelength_input_ignored: {axis: dependence, exit: 4, forbidden_state: X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES}
+    undeclared_wavelength_input_used: {axis: dependence, exit: 4, forbidden_state: X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES}
+    claimed_fwhm_input_ignored: {axis: dependence, exit: 4, forbidden_state: X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES}
+    undeclared_fwhm_input_used: {axis: dependence, exit: 4, forbidden_state: X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES}
+    routed_domain_outside_model_valid_range: {axis: route, exit: 4, forbidden_states: [X2_DECLARED_TAP_MATCHES_ROUTE_ON_CHALLENGES, X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES]}
+    target_invariant_output_on_challenges: {axis: dependence, exit: 4, forbidden_state: X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES}
+    stochastic_inference: {axis: replay, exit: 4, required_state: X0_NO_EXECUTABLE_OBSERVATION}
+    radiometric_quantity_mismatch: {axis: bundle, exit: 2}
+    undeclared_normalization: {axis: route, exit: 4, forbidden_states: [X2_DECLARED_TAP_MATCHES_ROUTE_ON_CHALLENGES, X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES]}
+    undeclared_spatial_reduction: {axis: route, exit: 4, forbidden_states: [X2_DECLARED_TAP_MATCHES_ROUTE_ON_CHALLENGES, X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES]}
+    context_dependent_undeclared_tap: {axis: route, exit: 4, forbidden_states: [X2_DECLARED_TAP_MATCHES_ROUTE_ON_CHALLENGES, X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES]}
+    hidden_resampling_or_extrapolation: {axis: route, exit: 4, applicability: actual_execution_tap_exposed}
+    duplicate_band_ids: {axis: bundle, exit: 2}
+  release_requires:
+    planted_fault_detection_fraction: 1.0
+    invalid_bundle_fixtures_exit_2_without_report: true
+    every_completed_fault_fixture_exits_4_and_has_overall_conformance_fault: true
+    axis_specific_state_blocks:
+      route_or_execution_fault: [X2_DECLARED_TAP_MATCHES_ROUTE_ON_CHALLENGES, X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES]
+      dependence_fault: [X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES]
+      spectral_support_fault: [S2_APPROX_WITHIN_SUPPORT, S3_SRF_WITHIN_DECLARED_SUPPORT]
+    preserve_unaffected_axis_evidence: true
+    clean_expected_states_all_reached: true
+    clean_false_outside_support_count: 0
+    identical_report_bytes_over_runs: 3
+    hidden_transform_after_supplier_reported_tap_is_not_observable: true
+
+outputs:
+  destination_must_not_exist: true
+  destination_parent_must_preexist_as_directory: true
+  write_location: fresh_sibling_staging_directory
+  every_output_file_fsynced: true
+  manifest_written_and_fsynced_last_as_completion_marker: true
+  staging_directory_fsynced_before_atomic_rename: true
+  staging_path_identity_rechecked_against_open_descriptor_immediately_before_rename: true
+  linux_libc_renameat2_availability_preflight_before_bundle_load_or_adapter_execution: true
+  pinned_parent_directory_descriptor_opened_before_bundle_loading: true
+  staging_writes_cleanup_publication_and_fsync_are_relative_to_pinned_parent: true
+  atomic_directory_rename_into_destination: linux_renameat2_RENAME_NOREPLACE
+  renameat2_unavailable_state: execution_failure_exit_3_without_unsafe_fallback
+  concurrent_destination_is_never_replaced: true
+  parent_directory_fsynced_after_rename: true
+  final_parent_path_and_published_inode_identity_checked: true
+  failure_before_successful_atomic_publication_leaves_no_bandtrace_destination: true
+  failure_after_successful_publication_returns_exit_3_without_rollback: true
+  filesystem_threat_model_trusts_all_processes_running_as_bandtrace_unix_uid: true
+  dedicated_account_and_private_output_parent_required_if_same_uid_cannot_be_trusted: true
+  renameat2_cannot_condition_source_name_on_already_open_staging_inode: true
+  successful_trusted_parent_publication_contains_all_fsynced_outputs_and_completion_manifest_at_atomic_rename: true
+  postpublication_failure_does_not_rollback_or_delete_destination_path: true
+  destination_existing_after_exit_3_is_untrusted_and_not_a_bandtrace_report: true
+  same_uid_staging_source_name_substitution_may_leave_untrusted_destination_on_exit_3: true
+  postpublication_requested_path_may_no_longer_reach_published_directory: true
+  concurrent_postpublication_move_replace_mutate_or_remove_is_outside_claim: true
+  malicious_same_user_postpublication_defense_claimed: false
+  prepublication_cleanup_is_nonrecursive: true
+  prepublication_cleanup_refuses_unexpected_subdirectories: true
+  staging_name_identity_rechecked_immediately_before_rmdir: true
+  rmdir_cannot_condition_name_on_open_staging_inode: true
+  malicious_same_uid_cleanup_name_swap_outside_guarantee: true
+  no_postpublication_cleanup_attempted: true
+  report_output_publication_contract:
+    platform: Linux
+    mechanism: renameat2(RENAME_NOREPLACE)
+    fresh_destination_required: true
+    private_parent_required: true
+    source_identity_prechecked: true
+    source_inode_conditioned_rename: false
+    destination_identity_postchecked: true
+    prepublication_cleanup_recursive: false
+    prepublication_cleanup_source_identity_rechecked_before_rmdir: true
+    same_uid_parent_name_race_fully_prevented: false
+    postpublication_rollback: false
+  output_budget_exceeded_state: execution_failure_exit_3_without_destination
+  observed_wall_clock_excluded_from_required_artifacts: true
+  deterministic_runtime_fields: [adapter_invocation_count, configured_time_budgets]
+  categorical_comparisons_use_unrounded_binary64: true
+  rounded_metric_and_threshold_may_display_equal_at_boundary: true
+  categorical_status_and_pass_boolean_are_authoritative_over_rounded_display: true
+  provenance_required:
+    - installed_source_tree_sha256
+    - installed_distribution_version
+    - normative_product_document_sha256
+    - normative_machine_config_sha256
+  installed_distribution_version_must_be_nonempty_string: true
+  installed_distribution_metadata_failure_state: execution_failure_exit_3_before_bundle_loading
+  packaged_normative_resources:
+    product_document: bandtrace/normative/BANDTRACE_PRODUCT.md
+    machine_config: bandtrace/normative/bandtrace_v1.yaml
+    exact_bytes_must_match_compiled_sha256_constants_before_bundle_loading: true
+    missing_unreadable_or_mismatched_state: execution_failure_exit_3_without_publication
+    packaged_hash_gate_is_external_authentication: false
+    coordinated_code_constants_and_resources_replacement_detected: false
+    authenticity_requires_independently_trusted_distribution_digest_or_signature: true
+  installed_source_tree_digest_prefix_utf8_nul: bandtrace-source-tree-v1
+  installed_source_tree_members: recursively_discovered_regular_py_files_under_installed_bandtrace_package
+  installed_source_tree_member_order: sorted_relative_posix_path_utf8
+  installed_source_tree_member_framing: u32be_path_length || path_utf8 || u64be_file_length || file_bytes
+  installed_source_digest_scope: REGULAR_PY_FILES_ONLY
+  installed_source_digest_is_execution_attestation: false
+  imported_bytecode_interpreter_and_native_dependency_bytes_hashed: false
+  execution_environment_attested: false
+  runtime_fingerprint_non_exhaustive: true
+  installed_source_tree_known_answer:
+    files_in_order:
+      - {path: a.py, file_bytes_hex: "780a"}
+      - {path: z/b.py, file_bytes_hex: "790a"}
+    sha256: b46a98a1db6ef4189c0ebfe002d2b1dc4169e3e7367b1ebf60cd2c642012a7e7
+  route_audit_exact_fields:
+    - declared_weight_float64_hex
+    - declared_weight_is_strictly_positive
+    - declared_target_column_is_exactly_zero
+  report_route_audit_representation:
+    axes: [model_channel_ids, target_band_ids]
+    parallel_matrices: [declared_weight, declared_weight_float64_hex, declared_weight_is_strictly_positive]
+    target_axis_vector: [declared_target_column_is_exactly_zero]
+    per_cell_object_list_forbidden: true
+  html_is_bounded_summary_not_full_report_duplication: true
+  html_required_content: [states, faults, limitations, canary_statuses, provenance]
+  html_required_linkage_hashes: [report.json, route.csv, canary_outputs.npz]
+  html_full_route_matrices_forbidden: true
+  required:
+    - report.json
+    - report.html
+    - route.csv
+    - canary_outputs.npz
+    - manifest.sha256
+  manifest_sha256_covers_other_outputs_in_lexical_filename_order:
+    - canary_outputs.npz
+    - report.html
+    - report.json
+    - route.csv
+  manifest_does_not_hash_itself: true
+  exit_codes:
+    completed_no_conformance_fault: 0
+    invalid_bundle: 2
+    execution_failure: 3
+    completed_with_conformance_fault: 4

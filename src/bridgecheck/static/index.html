@@ -30,6 +30,7 @@
           <a href="#workspace">Notebook</a>
           <a href="#evidence">Evidence</a>
           <a href="#protocol">Protocol</a>
+          <a href="#companion">BandTrace</a>
           <a href="https://github.com/harrrshall/alphaspectra-bridgecheck">Source <span aria-hidden="true">↗</span></a>
         </nav>
 
@@ -372,6 +373,46 @@
           <li><span>03</span><div><strong>Audit</strong><p>Compare against strong baselines by group.</p></div></li>
           <li><span>04</span><div><strong>Test value</strong><p>Evaluate measured SWIR on untouched endpoints.</p></div></li>
         </ol>
+      </section>
+
+      <section class="companion" id="companion" aria-labelledby="companion-title">
+        <div class="companion-shell">
+          <div class="companion-copy">
+            <p class="section-code">Separate companion / Linux CLI</p>
+            <h2 id="companion-title">Challenge the declared spectral route before external validation.</h2>
+            <p>
+              BandTrace challenges a declared sensor-to-model route, measures required-band output
+              dependence on adequate probes, and compares routed response functions with declared
+              training support. It keeps executable, spectral and biological evidence separate.
+            </p>
+            <div class="companion-actions">
+              <a class="button button-primary" href="https://harrrshall.github.io/alphaspectra-bridgecheck/bandtrace/">Open BandTrace release</a>
+              <a class="button button-quiet" href="https://github.com/harrrshall/alphaspectra-bridgecheck/tree/bandtrace-v0.1.0/bandtrace/source">Browse source <span aria-hidden="true">↗</span></a>
+            </div>
+            <p class="companion-boundary">
+              BandTrace does not run on this page. BridgeCheck sends it no inputs or generated
+              bands, and it does not change BridgeCheck's evidence, output types or claim ceiling.
+            </p>
+          </div>
+          <div class="axis-summary" aria-label="BandTrace reference release states">
+            <article>
+              <span>X3</span>
+              <strong>Dependence observed</strong>
+              <p>On frozen probes for the selected numeric output—not global causal use.</p>
+            </article>
+            <article>
+              <span>S3</span>
+              <strong>Declared SRF support</strong>
+              <p>Routed response functions fit declared support—not camera calibration.</p>
+            </article>
+            <article class="axis-stop">
+              <span>T0</span>
+              <strong>Biology not evaluated</strong>
+              <p>No transport, accuracy, diagnosis, certificate or deployment approval.</p>
+            </article>
+          </div>
+        </div>
+        <p class="companion-note">X3 + S3 + T0 is the instrument-controlled reference result, not a promise that a submitted model or sensor will pass.</p>
       </section>
     </main>
 

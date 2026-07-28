@@ -1,0 +1,217 @@
+{
+  "schema_version": "bandtrace.prepublication-verification.v1",
+  "product": "AlphaSpectra BandTrace",
+  "distribution_name": "alphaspectra-bandtrace",
+  "version": "0.1.0",
+  "verification_date_local": "2026-07-28",
+  "status": "PASS_PUBLICATION_CANDIDATE_VERIFICATION",
+  "externally_published": false,
+  "publication_target": {
+    "repository": "https://github.com/harrrshall/alphaspectra-bridgecheck",
+    "repository_visibility": "public",
+    "source_subtree": "bandtrace/source",
+    "release_tag": "bandtrace-v0.1.0",
+    "release_page": "https://github.com/harrrshall/alphaspectra-bridgecheck/releases/tag/bandtrace-v0.1.0",
+    "static_page": "https://harrrshall.github.io/alphaspectra-bridgecheck/bandtrace/",
+    "security_reporting": {
+      "url": "https://github.com/harrrshall/alphaspectra-bridgecheck/security/advisories/new",
+      "private_vulnerability_reporting_enabled": true,
+      "verified_by": "GitHub repository API",
+      "verified_date_local": "2026-07-28"
+    }
+  },
+  "claim_ceiling": {
+    "software_and_package_verification_only": true,
+    "maximum_clean_reference_state": "X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES + S3_SRF_WITHIN_DECLARED_SUPPORT + T0_BIOLOGICAL_TRANSPORT_NOT_EVALUATED",
+    "biological_transport_state": "T0_BIOLOGICAL_TRANSPORT_NOT_EVALUATED",
+    "certificate": false,
+    "biological_validation": false,
+    "deployment_approval": false,
+    "camera_compatibility_finding": false,
+    "calibration_finding": false,
+    "safety_finding": false,
+    "regulatory_assessment": false
+  },
+  "product_boundary": {
+    "bridgecheck_and_bandtrace_are_independent_products": true,
+    "separate_executables": true,
+    "separate_evidence_and_receipts": true,
+    "separate_claim_ceilings": true,
+    "bridgecheck_browser_runtime_executes_bandtrace": false,
+    "bandtrace_static_page_executes_bandtrace": false,
+    "repository_root_license_applies_to_all_products": false
+  },
+  "normative_authority": {
+    "product_document": "docs/BANDTRACE_PRODUCT.md",
+    "product_document_sha256": "5ad5895098de498ad4d61fd26b73637534d85e5cf2c65c0087226ee54b3fd912",
+    "machine_policy": "configs/product/bandtrace_v1.yaml",
+    "machine_policy_sha256": "03c7302161377489e11aea65f74ec414bd88200ec43533a4313bedc6eaa25122",
+    "vendored_bytes_equal_umbrella_authorities": true,
+    "installed_wheel_authority_gate_passed": true,
+    "packaged_hash_gate_is_external_authentication": false
+  },
+  "artifacts": [
+    {
+      "filename": "alphaspectra_bandtrace-0.1.0-py3-none-any.whl",
+      "bytes": 98041,
+      "sha256": "e6800aec7e8a8411940a1f53ed9ae56273bacc0c8c22ecccc72e0c9de9938e7f"
+    },
+    {
+      "filename": "alphaspectra_bandtrace-0.1.0.tar.gz",
+      "bytes": 164365,
+      "sha256": "6ed50ec69baf2031ef3025bf6dc639c7f15777ae78b9fcb712a8351dd0725cb1"
+    }
+  ],
+  "build": {
+    "command": "SOURCE_DATE_EPOCH=1785196800 python -I tools/build_release.py --output-dir public-dist",
+    "source_date_epoch": 1785196800,
+    "source_date_epoch_utc": "2026-07-28T00:00:00Z",
+    "builder_sha256": "b17cfeb86cd4af3da7c61eff2a9baf50acc31a57b26bbe1189d4a31650b31dbd",
+    "build_interpreter": "CPython 3.12.3",
+    "build_requirements": [
+      {
+        "name": "setuptools",
+        "version": "83.0.0",
+        "wheel_sha256": "29b23c360f22f414dc7336bb39178cc7bcbf6021ed2733cde173f09dba19abb3"
+      },
+      {
+        "name": "wheel",
+        "version": "0.47.0",
+        "wheel_sha256": "212281cab4dff978f6cedd499cd893e1f620791ca6ff7107cf270781e587eced"
+      }
+    ],
+    "isolated_mode_required": true,
+    "minimal_child_environment": true,
+    "hash_required_build_dependency_install": true,
+    "wheel_built_from_exact_normalized_sdist": true,
+    "independent_final_build_count": 2,
+    "independent_final_build_byte_equality": true,
+    "checksum_manifest_is_external_authentication": false,
+    "cryptographic_signature_present": false
+  },
+  "test_runs": {
+    "coherent_repository_suite": {
+      "result": "PASS",
+      "passed": 396,
+      "failed": 0,
+      "seconds": 425.92
+    },
+    "compatibility_matrix": [
+      {
+        "environment": "py310-np126",
+        "python": "3.10.18",
+        "numpy": "1.26.4",
+        "pyyaml": "6.0.3",
+        "pytest": "9.1.1",
+        "result": "394 passed, 2 release tests deselected in 410.38s"
+      },
+      {
+        "environment": "py310-np2",
+        "python": "3.10.18",
+        "numpy": "2.2.6",
+        "pyyaml": "6.0.3",
+        "pytest": "9.1.1",
+        "result": "394 passed, 2 release tests deselected in 387.57s"
+      },
+      {
+        "environment": "py311-np126",
+        "python": "3.11.13",
+        "numpy": "1.26.4",
+        "pyyaml": "6.0.3",
+        "pytest": "9.1.1",
+        "result": "394 passed, 2 release tests deselected in 400.27s"
+      },
+      {
+        "environment": "py311-np2",
+        "python": "3.11.13",
+        "numpy": "2.4.6",
+        "pyyaml": "6.0.3",
+        "pytest": "9.1.1",
+        "result": "394 passed, 2 release tests deselected in 393.82s"
+      },
+      {
+        "environment": "py312-np126",
+        "python": "3.12.3",
+        "numpy": "1.26.4",
+        "pyyaml": "6.0.3",
+        "pytest": "9.1.1",
+        "result": "394 passed, 2 release tests deselected in 424.26s"
+      },
+      {
+        "environment": "py312-np2",
+        "python": "3.12.3",
+        "numpy": "2.5.1",
+        "pyyaml": "6.0.3",
+        "pytest": "9.1.1",
+        "result": "394 passed, 2 release tests deselected in 194.13s",
+        "execution_note": "An earlier concurrent attempt was terminated externally with exit 143 at 36% and no test failure; the environment was rerun alone to completion."
+      }
+    ],
+    "extracted_public_sdist": {
+      "result": "393 passed, 1 expected standalone skip, 2 release tests deselected in 200.14s",
+      "expected_skip": "Umbrella-repository authority files are intentionally absent from the standalone source archive; their equality passed in the coherent repository suite."
+    },
+    "bridgecheck_cohosting_regression_suite": {
+      "result": "61 passed, 1 deprecation warning in 1.04s",
+      "warning_scope": "FastAPI TestClient dependency deprecation; no test failure."
+    },
+    "compileall": "PASS",
+    "twine_strict": "wheel PASS; sdist PASS",
+    "installed_dependency_consistency": "No broken requirements found",
+    "runtime_dependency_vulnerability_audit": {
+      "result": "No known vulnerabilities found",
+      "tool": "pip-audit 2.10.1",
+      "dependencies": [
+        "numpy==2.5.1",
+        "PyYAML==6.0.3"
+      ],
+      "note": "The unpublished BandTrace distribution is not present on PyPI and was outside the public vulnerability-database query."
+    },
+    "installed_wheel_quickstart": {
+      "result": "PASS",
+      "python": "3.12.3",
+      "numpy": "2.5.1",
+      "pyyaml": "6.0.3",
+      "installed_source_tree_sha256": "5563b2be3cfabee287ebc350205b431d073bc5d615f08b16978e5a9cb4619cdf",
+      "states": {
+        "executable": "X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES",
+        "spectral": "S3_SRF_WITHIN_DECLARED_SUPPORT",
+        "biological": "T0_BIOLOGICAL_TRANSPORT_NOT_EVALUATED"
+      },
+      "report_files": [
+        "canary_outputs.npz",
+        "manifest.sha256",
+        "report.html",
+        "report.json",
+        "route.csv"
+      ]
+    }
+  },
+  "artifact_boundary_checks": {
+    "wheel_member_count": 26,
+    "wheel_single_dist_info": true,
+    "wheel_record_full_coverage_and_hashes": true,
+    "wheel_entry_point_exact": true,
+    "wheel_legal_files_exact": true,
+    "sdist_member_count": 58,
+    "sdist_sorted_ustar": true,
+    "sdist_all_member_mtime_equals_source_date_epoch": true,
+    "sdist_all_uid_gid_zero": true,
+    "sdist_all_owner_names_empty": true,
+    "artifact_symlinks_present": false,
+    "workspace_or_pytest_path_leakage_detected": false
+  },
+  "previous_local_candidate": {
+    "receipt": "dist/RELEASE_VERIFICATION.json",
+    "receipt_sha256": "28fcfc644fb8c86efceaa5e2f0f8011798ec16f170d85a3bf28b71bd592ff298",
+    "superseded_for_publication": true,
+    "reason": "Public repository, static-site, security and product-scoped release metadata changed the distribution bytes."
+  },
+  "publication_prerequisites_remaining": [
+    "Commit and push the exact source and artifact bytes.",
+    "Create the product-scoped bandtrace-v0.1.0 tag and GitHub release.",
+    "Require successful CI and Pages workflows for the exact publication commit.",
+    "Download the release and Pages-hosted artifacts through their public URLs and verify their SHA-256 digests.",
+    "Write a post-publication receipt containing the immutable commit identity, workflow runs, release assets and live-host verification."
+  ]
+}
