@@ -115,9 +115,7 @@ jobs:
           cp bandtrace/dist/alphaspectra_bandtrace-0.1.0.tar.gz _site/downloads/bandtrace/
           cp bandtrace/dist/PREPUBLICATION_VERIFICATION.json _site/downloads/bandtrace/
           cp bandtrace/dist/SHA256SUMS _site/downloads/bandtrace/
-          if [[ -f bandtrace/PUBLICATION_VERIFICATION.json ]]; then
-            cp bandtrace/PUBLICATION_VERIFICATION.json _site/docs/
-          fi
+          cp bandtrace/PUBLICATION_VERIFICATION.json _site/docs/
           test -f _site/index.html
           test -f _site/bandtrace/index.html
           test -f _site/assets/app.js
@@ -130,6 +128,7 @@ jobs:
           test -f _site/downloads/bandtrace/alphaspectra_bandtrace-0.1.0-py3-none-any.whl
           test -f _site/downloads/bandtrace/alphaspectra_bandtrace-0.1.0.tar.gz
           test -f _site/downloads/bandtrace/PREPUBLICATION_VERIFICATION.json
+          test -f _site/docs/PUBLICATION_VERIFICATION.json
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

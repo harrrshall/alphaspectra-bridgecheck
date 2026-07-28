@@ -1,0 +1,253 @@
+{
+  "schema_version": "bandtrace.publication-verification.v1",
+  "product": "AlphaSpectra BandTrace",
+  "distribution_name": "alphaspectra-bandtrace",
+  "version": "0.1.0",
+  "verification_time_utc": "2026-07-28T04:42:24Z",
+  "status": "PASS_PUBLIC_RELEASE_AND_HOSTED_BYTE_VERIFICATION",
+  "externally_published": true,
+  "claim_ceiling": {
+    "software_and_package_verification_only": true,
+    "maximum_clean_reference_state": "X3_OUTPUT_DEPENDENCE_OBSERVED_ON_PROBES + S3_SRF_WITHIN_DECLARED_SUPPORT + T0_BIOLOGICAL_TRANSPORT_NOT_EVALUATED",
+    "biological_transport_state": "T0_BIOLOGICAL_TRANSPORT_NOT_EVALUATED",
+    "certificate": false,
+    "biological_validation": false,
+    "deployment_approval": false,
+    "camera_compatibility_finding": false,
+    "calibration_finding": false,
+    "safety_finding": false,
+    "regulatory_assessment": false
+  },
+  "source_identity": {
+    "repository": "https://github.com/harrrshall/alphaspectra-bridgecheck",
+    "release_source_commit": "42dbc6248daf91fab5c4a6cf3630ef5441cf66f6",
+    "canonical_immutable_source_url": "https://github.com/harrrshall/alphaspectra-bridgecheck/tree/42dbc6248daf91fab5c4a6cf3630ef5441cf66f6/bandtrace/source",
+    "annotated_tag": "bandtrace-v0.1.0",
+    "annotated_tag_object_sha": "280bae58ac8f8868874780cf201e8fe617970217",
+    "tag_resolved_commit": "42dbc6248daf91fab5c4a6cf3630ef5441cf66f6",
+    "tag_signature_verified": false,
+    "tag_signature_reason": "unsigned",
+    "github_release_immutable": false,
+    "mutable_tag_or_release_is_sole_exact_source_authority": false,
+    "exact_source_authority": "full_git_commit_sha",
+    "origin_authentication_claimed": false
+  },
+  "release": {
+    "id": 360841322,
+    "url": "https://github.com/harrrshall/alphaspectra-bridgecheck/releases/tag/bandtrace-v0.1.0",
+    "name": "AlphaSpectra BandTrace 0.1.0",
+    "tag": "bandtrace-v0.1.0",
+    "draft": false,
+    "prerelease": false,
+    "latest_repository_release": false,
+    "bridgecheck_v0_1_0_remains_latest": true,
+    "published_at_utc": "2026-07-28T04:37:03Z",
+    "assets": [
+      {
+        "id": 492293335,
+        "name": "alphaspectra_bandtrace-0.1.0-py3-none-any.whl",
+        "bytes": 98041,
+        "github_reported_digest": "sha256:e6800aec7e8a8411940a1f53ed9ae56273bacc0c8c22ecccc72e0c9de9938e7f",
+        "public_download_url": "https://github.com/harrrshall/alphaspectra-bridgecheck/releases/download/bandtrace-v0.1.0/alphaspectra_bandtrace-0.1.0-py3-none-any.whl",
+        "public_fetch_sha256": "e6800aec7e8a8411940a1f53ed9ae56273bacc0c8c22ecccc72e0c9de9938e7f",
+        "public_fetch_matches_local_candidate": true
+      },
+      {
+        "id": 492293338,
+        "name": "alphaspectra_bandtrace-0.1.0.tar.gz",
+        "bytes": 164365,
+        "github_reported_digest": "sha256:6ed50ec69baf2031ef3025bf6dc639c7f15777ae78b9fcb712a8351dd0725cb1",
+        "public_download_url": "https://github.com/harrrshall/alphaspectra-bridgecheck/releases/download/bandtrace-v0.1.0/alphaspectra_bandtrace-0.1.0.tar.gz",
+        "public_fetch_sha256": "6ed50ec69baf2031ef3025bf6dc639c7f15777ae78b9fcb712a8351dd0725cb1",
+        "public_fetch_matches_local_candidate": true
+      },
+      {
+        "id": 492293337,
+        "name": "PREPUBLICATION_VERIFICATION.json",
+        "bytes": 8669,
+        "github_reported_digest": "sha256:e82e111da5e6f716f40b81a6f1d57be1affeb81948edcb90f7b606b79013c716",
+        "public_download_url": "https://github.com/harrrshall/alphaspectra-bridgecheck/releases/download/bandtrace-v0.1.0/PREPUBLICATION_VERIFICATION.json",
+        "public_fetch_sha256": "e82e111da5e6f716f40b81a6f1d57be1affeb81948edcb90f7b606b79013c716",
+        "public_fetch_matches_local_candidate": true
+      },
+      {
+        "id": 492293339,
+        "name": "SHA256SUMS",
+        "bytes": 313,
+        "github_reported_digest": "sha256:1145e474dc655c320197c104d27b2c52f25550e57014ced221e63c583f981abc",
+        "public_download_url": "https://github.com/harrrshall/alphaspectra-bridgecheck/releases/download/bandtrace-v0.1.0/SHA256SUMS",
+        "public_fetch_sha256": "1145e474dc655c320197c104d27b2c52f25550e57014ced221e63c583f981abc",
+        "public_fetch_matches_local_candidate": true
+      }
+    ],
+    "public_fetch_method": "unauthenticated HTTPS GET with redirect following and TLS 1.2 minimum",
+    "all_platform_digests_match_public_fetches": true,
+    "all_public_fetches_match_local_candidates": true
+  },
+  "continuous_integration": {
+    "run_id": 30329074228,
+    "url": "https://github.com/harrrshall/alphaspectra-bridgecheck/actions/runs/30329074228",
+    "event": "push",
+    "head_sha": "42dbc6248daf91fab5c4a6cf3630ef5441cf66f6",
+    "status": "completed",
+    "conclusion": "success",
+    "started_at_utc": "2026-07-28T04:33:14Z",
+    "completed_at_utc": "2026-07-28T04:36:26Z",
+    "jobs": [
+      {
+        "id": 90180299529,
+        "name": "BandTrace / Python 3.10",
+        "conclusion": "success"
+      },
+      {
+        "id": 90180299719,
+        "name": "BandTrace / Python 3.12",
+        "conclusion": "success"
+      },
+      {
+        "id": 90180299584,
+        "name": "test-and-package (3.10)",
+        "conclusion": "success"
+      },
+      {
+        "id": 90180299643,
+        "name": "test-and-package (3.12)",
+        "conclusion": "success"
+      },
+      {
+        "id": 90180383592,
+        "name": "container-smoke",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "initial_pages_deployment": {
+    "run_id": 30329272219,
+    "url": "https://github.com/harrrshall/alphaspectra-bridgecheck/actions/runs/30329272219",
+    "event": "workflow_dispatch",
+    "head_sha": "42dbc6248daf91fab5c4a6cf3630ef5441cf66f6",
+    "status": "completed",
+    "conclusion": "success",
+    "started_at_utc": "2026-07-28T04:37:38Z",
+    "completed_at_utc": "2026-07-28T04:38:25Z",
+    "deployment_id": 5634174403,
+    "build_job_id": 90180877658,
+    "deploy_job_id": 90180915606,
+    "pages_url": "https://harrrshall.github.io/alphaspectra-bridgecheck/",
+    "https_enforced": true,
+    "public": true,
+    "deployment_source": "GitHub Actions"
+  },
+  "live_pages_fetch_back": {
+    "verified_at_utc": "2026-07-28T04:39:45Z",
+    "request_cache_control": "no-cache",
+    "local_byte_comparison_passed": true,
+    "files": [
+      {
+        "url": "https://harrrshall.github.io/alphaspectra-bridgecheck/",
+        "sha256": "8476d5c5768c2da1b8403cc1f69cfb57463f77f58db8576c5918f756dfbe2c86",
+        "matches_release_source_commit": true
+      },
+      {
+        "url": "https://harrrshall.github.io/alphaspectra-bridgecheck/bandtrace/",
+        "sha256": "22b319681d18fc5e3248dce223359a03b33d075d642b6c016400b353673938f2",
+        "matches_release_source_commit": true
+      },
+      {
+        "url": "https://harrrshall.github.io/alphaspectra-bridgecheck/assets/styles.css",
+        "sha256": "c9d1c7993352b297369208fdc4b483b3beddbb5a77ab7ebd295ebad8ced3aba0",
+        "matches_release_source_commit": true
+      },
+      {
+        "url": "https://harrrshall.github.io/alphaspectra-bridgecheck/assets/app.js",
+        "sha256": "d8aeb03fe1b5dfc79b7e7ff04f654ad7e434b690dc0e9df6a418b02a8f9fb76f",
+        "matches_release_source_commit": true
+      },
+      {
+        "url": "https://harrrshall.github.io/alphaspectra-bridgecheck/assets/bridge-core.js",
+        "sha256": "7a991c927174251889bdf3d09ec010af1a344addc426e59bcffad883c9ae9658",
+        "matches_release_source_commit": true
+      },
+      {
+        "url": "https://harrrshall.github.io/alphaspectra-bridgecheck/assets/examples.js",
+        "sha256": "2301f839aa5fa88c81bd275498e6e6d08f3afef38c98aa5cd7ee9b6592521f83",
+        "matches_release_source_commit": true
+      },
+      {
+        "url": "https://harrrshall.github.io/alphaspectra-bridgecheck/model/manifest.json",
+        "sha256": "da3d63a6f535219a618f6b2a118693f59f2aa001a75480372a163a480ab4d2bd",
+        "matches_release_source_commit": true
+      },
+      {
+        "url": "https://harrrshall.github.io/alphaspectra-bridgecheck/model/bridge_v1.f64",
+        "bytes": 4861704,
+        "sha256": "aa9700558836fb7730ab650dd0eaaf921038dce65a25aba9d9efc8d451d0d83f",
+        "matches_release_source_commit": true
+      },
+      {
+        "url": "https://harrrshall.github.io/alphaspectra-bridgecheck/downloads/bandtrace/alphaspectra_bandtrace-0.1.0-py3-none-any.whl",
+        "sha256": "e6800aec7e8a8411940a1f53ed9ae56273bacc0c8c22ecccc72e0c9de9938e7f",
+        "matches_release_asset": true
+      },
+      {
+        "url": "https://harrrshall.github.io/alphaspectra-bridgecheck/downloads/bandtrace/alphaspectra_bandtrace-0.1.0.tar.gz",
+        "sha256": "6ed50ec69baf2031ef3025bf6dc639c7f15777ae78b9fcb712a8351dd0725cb1",
+        "matches_release_asset": true
+      },
+      {
+        "url": "https://harrrshall.github.io/alphaspectra-bridgecheck/downloads/bandtrace/PREPUBLICATION_VERIFICATION.json",
+        "sha256": "e82e111da5e6f716f40b81a6f1d57be1affeb81948edcb90f7b606b79013c716",
+        "matches_release_asset": true
+      },
+      {
+        "url": "https://harrrshall.github.io/alphaspectra-bridgecheck/downloads/bandtrace/SHA256SUMS",
+        "sha256": "1145e474dc655c320197c104d27b2c52f25550e57014ced221e63c583f981abc",
+        "matches_release_asset": true
+      }
+    ]
+  },
+  "final_receipt_surface": {
+    "public_url": "https://harrrshall.github.io/alphaspectra-bridgecheck/docs/PUBLICATION_VERIFICATION.json",
+    "linked_from_bandtrace_page": true,
+    "required_by_pages_workflow": true,
+    "self_digest_embedded": false,
+    "self_digest_note": "A receipt cannot contain its own SHA-256 without changing that digest. Verify the public byte stream against the immutable repository commit that adds this file."
+  },
+  "expected_final_static_updates": {
+    "purpose": "Replace mutable tag source links with the immutable release commit and expose this receipt.",
+    "root_index_sha256": "77a76f8ed9da55e88736cfef1800097f9e44f6b39c7210e147e0da66ffd3455c",
+    "bandtrace_index_sha256": "6f0faf36136beaaf8151596dda9a687e96a776fdad3f029cf58dae55aeaac817",
+    "products_markdown_sha256": "6fce2c5b7fb52da26d0fcf63ec21725608acdfa2a3e4502739b391f711137430",
+    "artifact_or_runtime_bytes_changed": false
+  },
+  "security_reporting": {
+    "private_vulnerability_reporting_enabled": true,
+    "verified_at_utc": "2026-07-28T04:39:45Z",
+    "verification_method": "GitHub repository API",
+    "url": "https://github.com/harrrshall/alphaspectra-bridgecheck/security/advisories/new"
+  },
+  "historical_pages_deployment_cleanup": {
+    "requested_by_project_owner": true,
+    "deleted_inactive_deployment_ids": [
+      5623978925,
+      5623481387,
+      5622578375
+    ],
+    "deleted_commits": [
+      "86a5bf1846ba9f9b4e1cd2efc169d54b98616b34",
+      "a1a6c5fa548e5dbe263f682c3f68905173df0323",
+      "cc454d29f926e6937789f5a37e02736713400227"
+    ],
+    "remaining_deployment_id": 5634174403,
+    "remaining_deployment_commit": "42dbc6248daf91fab5c4a6cf3630ef5441cf66f6",
+    "cleanup_verified_by_listing_api": true
+  },
+  "verification_limits": {
+    "cryptographic_signature_present": false,
+    "github_release_immutable": false,
+    "checksum_manifest_is_external_authentication": false,
+    "public_host_fetch_proves_biological_transport": false,
+    "public_host_fetch_proves_customer_bundle_compatibility": false,
+    "subprocess_adapter_is_sandboxed": false
+  }
+}

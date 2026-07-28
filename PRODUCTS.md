@@ -16,6 +16,7 @@ not certify, calibrate, approve or establish the biological performance of the o
 
 - BridgeCheck browser application: <https://harrrshall.github.io/alphaspectra-bridgecheck/>
 - BandTrace static release page: <https://harrrshall.github.io/alphaspectra-bridgecheck/bandtrace/>
+- BandTrace publication receipt: <https://harrrshall.github.io/alphaspectra-bridgecheck/docs/PUBLICATION_VERIFICATION.json>
 - BridgeCheck release tag: `v0.1.0`
 - BandTrace release tag: `bandtrace-v0.1.0`
 - Private vulnerability reporting:

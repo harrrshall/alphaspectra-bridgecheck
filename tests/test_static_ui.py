@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -79,7 +80,7 @@ def test_research_interface_has_five_accessible_playable_cases() -> None:
     assert "https://harrrshall.github.io/alphaspectra-bridgecheck/bandtrace/" in parser.hrefs
     assert (
         "https://github.com/harrrshall/alphaspectra-bridgecheck/tree/"
-        "bandtrace-v0.1.0/bandtrace/source"
+        "42dbc6248daf91fab5c4a6cf3630ef5441cf66f6/bandtrace/source"
     ) in parser.hrefs
     for removed in (
         "Notebook / 01",
@@ -130,7 +131,8 @@ def test_bandtrace_release_page_is_static_bounded_and_hash_specific() -> None:
     assert "This page does not execute BandTrace" in html
     assert "Challenge the declared spectral route" in html
     assert "Fails closed inside its declared boundary" in html
-    assert "Byte-identical candidate artifacts" in html
+    assert "Published release / verified hosted bytes" in html
+    assert "Byte-identical hosted artifacts" in html
     assert "T0_BIOLOGICAL_TRANSPORT_NOT_EVALUATED" in html
     assert "not a compatibility certificate" in html
     assert "e6800aec7e8a8411940a1f53ed9ae56273bacc0c8c22ecccc72e0c9de9938e7f" in html
@@ -139,3 +141,29 @@ def test_bandtrace_release_page_is_static_bounded_and_hash_specific() -> None:
     assert "../downloads/bandtrace/alphaspectra_bandtrace-0.1.0.tar.gz" in parser.hrefs
     assert "../downloads/bandtrace/PREPUBLICATION_VERIFICATION.json" in parser.hrefs
     assert "../downloads/bandtrace/SHA256SUMS" in parser.hrefs
+    assert "../docs/PUBLICATION_VERIFICATION.json" in parser.hrefs
+    assert (
+        "https://github.com/harrrshall/alphaspectra-bridgecheck/tree/"
+        "42dbc6248daf91fab5c4a6cf3630ef5441cf66f6/bandtrace/source"
+    ) in parser.hrefs
+
+
+def test_bandtrace_publication_receipt_preserves_identity_and_claim_ceiling() -> None:
+    receipt = json.loads((PRODUCT_ROOT / "bandtrace/PUBLICATION_VERIFICATION.json").read_text())
+
+    assert receipt["status"] == "PASS_PUBLIC_RELEASE_AND_HOSTED_BYTE_VERIFICATION"
+    assert receipt["source_identity"]["release_source_commit"] == (
+        "42dbc6248daf91fab5c4a6cf3630ef5441cf66f6"
+    )
+    assert receipt["source_identity"]["github_release_immutable"] is False
+    assert receipt["source_identity"]["exact_source_authority"] == "full_git_commit_sha"
+    assert receipt["continuous_integration"]["conclusion"] == "success"
+    assert receipt["initial_pages_deployment"]["conclusion"] == "success"
+    assert receipt["release"]["all_platform_digests_match_public_fetches"] is True
+    assert receipt["release"]["all_public_fetches_match_local_candidates"] is True
+    assert receipt["claim_ceiling"]["biological_transport_state"] == (
+        "T0_BIOLOGICAL_TRANSPORT_NOT_EVALUATED"
+    )
+    assert receipt["claim_ceiling"]["certificate"] is False
+    assert receipt["claim_ceiling"]["biological_validation"] is False
+    assert receipt["claim_ceiling"]["deployment_approval"] is False
